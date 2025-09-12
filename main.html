@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LIVE | Asia Cup 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-darker: #0f172a; --bg-dark: #1e293b; --bg-medium: #334155;
+      --text-light: #e2e8f0; --text-muted: #94a3b8; --accent: #38bdf8;
+      --danger: #f43f5e; --live-red: #ef4444; --font-family: 'Poppins', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; margin: 0; background-color: var(--bg-darker); }
+    body { 
+      color: var(--text-light); font-family: var(--font-family); 
+      display: flex; flex-direction: column; /* নতুন লেআউটের জন্য */
+    }
+    
+    /* === নতুন লেআউট স্টাইল শুরু === */
+    .video-container {
+        flex-shrink: 0;
+        background-color: #000;
+        width: 100%;
+        line-height: 0; /* অতিরিক্ত স্পেস দূর করতে */
+    }
+    .app-container {
+      display: flex; flex-direction: column;
+      flex-grow: 1; /* বাকি সব জায়গা নিবে */
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      background-color: var(--bg-darker);
+      overflow: hidden; /* গুরুত্বপূর্ণ */
+    }
+    /* === নতুন লেআউট স্টাইল শেষ === */
+
+    /* === ভিডিও প্লেয়ার স্টাইল শুরু === */
+    .video-wrapper { 
+      position: relative; 
+      background-color: #000; 
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 16 / 9; /* ভিডিওর আকার ঠিক রাখবে */
+      max-height: 75vh; /* বড় স্ক্রিনে অতিরিক্ত লম্বা হওয়া থেকে বাঁচাবে */
+    }
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* ভিডিও যেন কেটে না যায় */
+      display: block;
+    }
+
+    /* লোডার স্টাইল */
+    .video-loader {
+        position: absolute; top: 50%; left: 50%; width: 50px; height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: var(--accent);
+        border-radius: 50%; animation: spin 1s linear infinite;
+        transform: translate(-50%, -50%); z-index: 10; display: none;
+    }
+    .video-wrapper.loading .video-loader { display: block; }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    /* নতুন মিনিমালিস্ট কন্ট্রোল */
+    .video-overlay-controls {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+      opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 20;
+    }
+    .video-wrapper:hover .video-overlay-controls,
+    .video-wrapper.controls-visible .video-overlay-controls {
+      opacity: 1; visibility: visible;
+    }
+    .live-indicator {
+        display: flex; align-items: center; gap: 8px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff; font-size: 14px; font-weight: 600;
+        padding: 5px 12px; border-radius: 5px; user-select: none;
+    }
+    .live-indicator::before {
+        content: ''; display: block; width: 9px; height: 9px;
+        background-color: var(--live-red); border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } }
+
+    .control-btn {
+      background: none; border: none; padding: 0; cursor: pointer; color: #fff;
+    }
+    .control-btn svg {
+      width: 28px; height: 28px; fill: currentColor;
+      filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
+      transition: transform 0.2s ease;
+    }
+    .control-btn:hover { color: var(--accent); }
+    .control-btn:hover svg { transform: scale(1.1); }
+    
+    /* আনমিউট ওভারলে */
+    #unmuteOverlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        color: #fff; text-align: center; cursor: pointer; z-index: 30;
+    }
+    #unmuteOverlay svg { width: 64px; height: 64px; margin-bottom: 10px; }
+    #unmuteOverlay p { font-size: 18px; font-weight: 500; text-shadow: 0 1px 3px #000; }
+    /* === ভিডিও প্লেয়ার স্টাইল শেষ === */
+    
+    .server-selection {
+        padding: 10px 16px; background-color: var(--bg-dark); display: flex;
+        gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0;
+        border-bottom: 1px solid var(--bg-medium);
+    }
+    .server-selection span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+    .server-btn {
+        background-color: var(--bg-medium); color: var(--text-light); border: 1px solid transparent;
+        border-radius: 15px; padding: 5px 12px; font-size: 13px; font-family: var(--font-family);
+        cursor: pointer; transition: all 0.2s ease;
+    }
+    .server-btn:hover { background-color: #475569; }
+    .server-btn.active { background-color: var(--accent); color: var(--bg-darker); font-weight: 600; border-color: var(--accent); }
+
+    .chat-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-header {
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
+      background-color: var(--bg-dark); border-bottom: 1px solid var(--bg-medium); flex-shrink: 0;
+    }
+    .chat-header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+    .viewer-count { font-size: 14px; color: var(--text-muted); }
+    
+    .messages-box {
+      flex-grow: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .message { display: flex; gap: 12px; align-items: flex-start; max-width: 90%; animation: slideInUp 0.4s ease-out; }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .message img.avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .message .content { background-color: var(--bg-dark); padding: 8px 12px; border-radius: 12px; border-top-left-radius: 0; }
+    .message .content .name { font-weight: 600; font-size: 13px; color: var(--accent); margin-bottom: 4px; }
+    .message .content .text { font-size: 15px; color: var(--text-light); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .message .content .chat-image { max-width: 100%; border-radius: 8px; margin-top: 8px; display: block; }
+    
+    .input-wrapper { flex-shrink: 0; background-color: var(--bg-dark); }
+    #imagePreviewBox, #profileStatusBox { padding: 0 16px; }
+    .image-preview, .profile-status { display: flex; align-items: center; gap: 10px; background-color: var(--bg-darker); border-radius: 8px; padding: 8px; margin-top: 8px; }
+    .image-preview img, .profile-status img { height: 40px; width: 40px; object-fit: cover; border-radius: 4px; }
+    .image-preview .filename, .profile-status .name { font-size: 13px; color: var(--text-muted); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .image-preview button, .profile-status button { background: var(--danger); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 22px; text-align: center; margin-left: auto; flex-shrink: 0; }
+
+    .input-area { display: flex; gap: 8px; align-items: center; padding: 12px 16px; }
+    .icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; border-radius: 50%; position: relative; flex-shrink: 0; }
+    .icon-btn:hover { background-color: rgba(255,255,255,0.1); }
+    .icon-btn svg { width: 24px; height: 24px; fill: var(--text-muted); transition: transform 0.2s; }
+    #sendBtn svg { fill: var(--accent); }
+    #sendBtn { transform: scale(0); transition: transform 0.2s ease; position: absolute; right: 0; }
+    #sendBtn.visible { transform: scale(1); }
+    #heartBtn.hidden { transform: scale(0); }
+    .input-field { flex-grow: 1; min-width: 0; }
+    .right-icons { position: relative; display: flex; align-items: center; }
+    input[type="text"] { width: 100%; border: 1px solid var(--bg-medium); background-color: var(--bg-darker); border-radius: 20px; padding: 10px 16px; color: var(--text-light); font-size: 15px; font-family: var(--font-family); }
+    input[type="text"]:focus { outline: none; border-color: var(--accent); }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-content { background-color: var(--bg-dark); padding: 24px; border-radius: 16px; width: 90%; max-width: 380px; text-align: center; border: 1px solid var(--bg-medium); transform: scale(0.95); animation: scaleIn 0.3s ease forwards; }
+    @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-content h2 { margin-top: 0; font-size: 20px; font-weight: 600; }
+    .modal-content p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+    #avatarPreview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; display: none; }
+    .avatar-upload-label { display: block; padding: 12px; border-radius: 8px; border: 2px dashed var(--bg-medium); cursor: pointer; margin-bottom: 12px; color: var(--text-muted); }
+    .avatar-upload-label:hover { border-color: var(--accent); color: var(--accent); }
+    .modal-content input { width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--bg-medium); background: var(--bg-darker); color: #fff; font-family: var(--font-family); }
+    .modal-content button { width: 100%; cursor: pointer; border: 0; padding: 12px; border-radius: 8px; background: var(--accent); color: var(--bg-darker); font-weight: 600; font-size: 16px; }
+    .modal-content button:disabled { background-color: var(--bg-medium); cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <div class="video-wrapper">
+      <div class="video-loader"></div>
+      <video id="videoPlayer" playsinline autoplay></video> <!-- muted attribute সরানো হয়েছে -->
+      
+      <div id="unmuteOverlay">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+        <p>Click to Play with Sound</p>
+      </div>
+
+      <div class="video-overlay-controls">
+        <div class="live-indicator">LIVE</div>
+        <button class="control-btn" id="fullscreenBtn" title="Fullscreen">
+          <svg viewBox="0 0 24 24"><path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M7,17H10V19H5V14H7V17Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="server-selection" id="serverSelection"></div>
+  </div>
+
+  <div class="app-container">
+    <div class="chat-wrapper">
+      <header class="chat-header">
+        <h1>Live Chat</h1>
+        <div class="viewer-count" id="viewerCount">● 0 watching</div>
+      </header>
+      <div class="messages-box" id="messagesBox"></div>
+      <div class="input-wrapper">
+        <div id="profileStatusBox"></div>
+        <div id="imagePreviewBox"></div>
+        <div class="input-area">
+          <button class="icon-btn" id="imageUploadBtn" title="Upload Image">
+            <svg viewBox="0 0 24 24"><path d="M21.58,16.09L17.24,11.75C16.67,11.18 15.77,11.18 15.2,11.75L14.47,12.47L11.82,9.82C11.25,9.25 10.35,9.25 9.78,9.82L4.42,15.18C4.16,15.44 4,15.81 4,16.2V19C4,20.1 4.9,21 6,21H18C19.1,21 20,20.1 20,19V17.59C20,17.18 20.16,16.77 20.42,16.53L21.58,15.37C22.15,14.8 22.15,13.9 21.58,13.33M6,19L10.5,14.5L13.5,17.5L16.5,14.5L18,16V19H6M16,10C17.1,10 18,9.1 18,8C18,6.9 17.1,6 16,6C14.9,6 14,6.9 14,8C14,9.1 14.9,10 16,10M20,2H4C2.9,2 2,2.9 2,4V13.8C2,14.21 2.16,14.62 2.42,14.88L3.58,16.04C3,16.5 3,17.22 3,17.59V19C3,20.65 4.35,22 6,22H18C19.65,22 21,20.65 21,19V17.59C21.54,17.22 21.73,16.63 21.58,16.09L22.75,14.93C23.32,14.36 23.32,13.46 22.75,12.89L19,9L14.75,13.25L11.25,9.75L7,14L4,11V4H20V2Z"/></svg>
+          </button>
+          <div class="input-field">
+            <input type="text" id="msgInput" placeholder="Write a message...">
+          </div>
+          <input type="file" id="imageInput" accept="image/*" style="display:none;">
+          <div class="right-icons">
+            <button class="icon-btn" id="heartBtn" title="React">
+              <svg viewBox="0 0 24 24"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" /></svg>
+            </button>
+            <button class="icon-btn" id="sendBtn" title="Send">
+              <svg viewBox="0 0 24 24"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" /></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-content">
+      <img id="avatarPreview" src="#" alt="Avatar Preview"/>
+      <h2>Join the Chat</h2>
+      <p>Create a profile with your name and photo to send messages.</p>
+      <input id="nameInput" type="text" placeholder="Your Name" />
+      <label for="avatarFile" class="avatar-upload-label" id="avatarUploadText">Upload a Photo</label>
+      <input id="avatarFile" type="file" accept="image/*" style="display:none"/>
+      <button id="createProfileBtn">Create Profile</button>
+      <div id="uploading" style="color:var(--text-muted);font-size:12px;margin-top:8px;display:none;">Uploading, please wait...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
+      measurementId: "G-V6DZ37WSBF"
+    };
+    const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
+    const PROFILE_KEY = 'livechat_profile_v5';
+
+    // === সার্ভার লিস্ট আপডেট করা হয়েছে ===
+    const videoServers = [
+        { name: 'English', url: 'https://tvsen5.aynaott.com/Ptvsports/tracks-v1a1/mono.ts.m3u8' },
+        { name: 'Hindi', url: 'https://dai.google.com/ssai/event/Bplrxzp6SZSY0xB1rOkzVw/master.m3u8' }
+    ];
+
+    firebase.initializeApp(firebaseConfig);
+    const firestore = firebase.firestore();
+    const rdb = firebase.database();
+
+    const getEl = (id) => document.getElementById(id);
+    const elements = {
+      messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'),
+      sendBtn: getEl('sendBtn'), heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'),
+      profileModal: getEl('profileModal'), imageUploadBtn: getEl('imageUploadBtn'), imageInput: getEl('imageInput'),
+      imagePreviewBox: getEl('imagePreviewBox'), avatarFile: getEl('avatarFile'),
+      profileStatusBox: getEl('profileStatusBox'), createProfileBtn: getEl('createProfileBtn'),
+      uploadingText: getEl('uploading'),
+      serverSelectionBox: getEl('serverSelection'),
+      unmuteOverlay: getEl('unmuteOverlay') // নতুন এলিমেন্ট
+    };
+    
+    let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+    let selectedImageFile = null;
+    let hls;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeVideoPlayer();
+      renderServerButtons();
+      loadVideoSource(videoServers[0].url);
+      
+      renderProfileStatus();
+      setupPresence();
+    });
+    
+    function initializeVideoPlayer() {
+      const videoWrapper = document.querySelector('.video-wrapper');
+      const video = getEl('videoPlayer');
+      const fullscreenBtn = getEl('fullscreenBtn');
+      
+      video.muted = false; // ডিফল্টভাবে আনমিউট থাকবে
+
+      // সঠিক কোড (নতুনটি)
+function toggleFullscreen() {
+  // ভিডিওর মূল কন্টেইনারকে টার্গেট করা হয়েছে
+  const videoWrapper = document.querySelector('.video-wrapper');
+
+  if (!document.fullscreenElement) {
+    // এখন শুধুমাত্র videoWrapper কেই ফুলস্ক্রিন করা হচ্ছে
+    videoWrapper.requestFullscreen().catch(err => {
+      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+    });
+    // মোবাইলের জন্য স্ক্রিন ল্যান্ডস্কেপ করার চেষ্টা করা
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {});
+    }
+  } else {
+    document.exitFullscreen();
+    // ফুলস্ক্রিন থেকে বের হওয়ার সময় ল্যান্ডস্কেপ আনলক করা
+    if (screen.orientation && screen.orientation.unlock) {
+      screen.orientation.unlock();
+    }
+  }
+}
+      
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+      elements.unmuteOverlay.addEventListener('click', () => {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                video.muted = false;
+                elements.unmuteOverlay.style.display = 'none';
+            }).catch(error => {
+                console.error("Could not play video:", error);
+            });
+        }
+      });
+
+      video.addEventListener('waiting', () => videoWrapper.classList.add('loading'));
+      video.addEventListener('canplay', () => videoWrapper.classList.remove('loading'));
+      video.addEventListener('playing', () => videoWrapper.classList.remove('loading'));
+      video.addEventListener('error', () => videoWrapper.classList.remove('loading'));
+    }
+
+    function renderServerButtons() {
+        elements.serverSelectionBox.innerHTML = '<span>Servers:</span>';
+        videoServers.forEach((server, index) => {
+            const button = document.createElement('button');
+            button.className = 'server-btn';
+            button.textContent = server.name;
+            button.dataset.url = server.url;
+            if (index === 0) button.classList.add('active');
+            
+            button.addEventListener('click', () => {
+                document.querySelector('.server-btn.active')?.classList.remove('active');
+                button.classList.add('active');
+                loadVideoSource(server.url);
+            });
+            elements.serverSelectionBox.appendChild(button);
+        });
+    }
+
+    function loadVideoSource(url) {
+        const videoWrapper = document.querySelector('.video-wrapper');
+        const video = getEl('videoPlayer');
+        videoWrapper.classList.add('loading');
+
+        if (hls) hls.destroy();
+
+        const playVideoWithSound = () => {
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    video.muted = false;
+                    elements.unmuteOverlay.style.display = 'none';
+                }).catch(error => {
+                    console.log("Autoplay with sound was blocked. Showing unmute overlay.");
+                    elements.unmuteOverlay.style.display = 'flex';
+                });
+            }
+        };
+
+        if (Hls.isSupported() && url.includes('.m3u8')) {
+            hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, playVideoWithSound);
+            hls.on(Hls.Events.ERROR, (event, data) => { if (data.fatal) console.error('HLS fatal error:', data); });
+        } else {
+            video.src = url;
+            video.addEventListener('canplaythrough', playVideoWithSound, { once: true });
+        }
+    }
+
+    const renderProfileStatus = () => {
+      if (profile) {
+        elements.profileStatusBox.innerHTML = `
+          <div class="profile-status">
+            <img src="${profile.avatar}" alt="${profile.name}">
+            <span class="name">Logged in as <strong>${escapeHtml(profile.name)}</strong></span>
+            <button onclick="signOut()" title="Sign Out">&times;</button>
+          </div>`;
+      } else {
+        elements.profileStatusBox.innerHTML = '';
+      }
+    };
+    
+    window.signOut = () => {
+      profile = null;
+      localStorage.removeItem(PROFILE_KEY);
+      renderProfileStatus();
+      setupPresence();
+    };
+
+    const openProfileModal = () => { if (!profile) elements.profileModal.style.display = 'flex'; };
+    elements.msgInput.addEventListener('focus', openProfileModal);
+
+    elements.msgInput.addEventListener('input', () => {
+        const hasText = elements.msgInput.value.trim().length > 0;
+        elements.sendBtn.classList.toggle('visible', hasText);
+        elements.heartBtn.classList.toggle('hidden', hasText);
+    });
+
+    elements.avatarFile.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                getEl('avatarPreview').src = event.target.result;
+                getEl('avatarPreview').style.display = 'block';
+                getEl('avatarUploadText').textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    elements.createProfileBtn.onclick = async () => {
+      const name = getEl('nameInput').value.trim();
+      const file = elements.avatarFile.files[0];
+      if (!name || !file) return alert('Please provide both name and photo.');
+      
+      elements.uploadingText.style.display = 'block';
+      elements.createProfileBtn.disabled = true;
+
+      try {
+        const avatarUrl = await uploadToImgbb(file);
+        if (!avatarUrl) throw new Error("Image upload returned no URL.");
+        
+        profile = { uid: 'u_' + Math.random().toString(36).substr(2, 9), name, avatar: avatarUrl };
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        elements.profileModal.style.display = 'none';
+        renderProfileStatus();
+        setupPresence();
+      } catch (error) {
+        alert("Profile creation failed. Please try again.");
+        console.error(error);
+      } finally {
+        elements.uploadingText.style.display = 'none';
+        elements.createProfileBtn.disabled = false;
+      }
+    };
+    
+    elements.imageUploadBtn.onclick = () => { if (!profile) openProfileModal(); else elements.imageInput.click(); };
+    elements.imageInput.onchange = (e) => {
+      selectedImageFile = e.target.files[0];
+      if (selectedImageFile) {
+        elements.imagePreviewBox.innerHTML = `<div class="image-preview"><img src="${URL.createObjectURL(selectedImageFile)}" alt="preview"><span class="filename">${escapeHtml(selectedImageFile.name)}</span><button onclick="cancelImageUpload()">&times;</button></div>`;
+      }
+    };
+    window.cancelImageUpload = () => { selectedImageFile = null; elements.imageInput.value = ''; elements.imagePreviewBox.innerHTML = ''; };
+
+    const sendMessage = async () => {
+      if (!profile) { openProfileModal(); return; }
+      const text = elements.msgInput.value.trim();
+      if (!text && !selectedImageFile) return;
+      const tempImageFile = selectedImageFile, tempText = text;
+      elements.msgInput.value = ''; cancelImageUpload();
+      elements.msgInput.dispatchEvent(new Event('input'));
+
+      try {
+        let imageUrl = null;
+        if (tempImageFile) imageUrl = await uploadToImgbb(tempImageFile);
+        const messageData = { ...profile, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+        if(tempText) messageData.text = tempText; if(imageUrl) messageData.imageUrl = imageUrl;
+        await firestore.collection('chats').add(messageData);
+      } catch (e) { console.error("Send failed:", e); alert("Failed to send message."); }
+    };
+    elements.sendBtn.addEventListener('click', sendMessage);
+    elements.msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }});
+
+    firestore.collection('chats').orderBy('createdAt', 'desc').limit(50)
+      .onSnapshot(snapshot => {
+        const messagesHtml = snapshot.docs.reverse().map(doc => {
+          const data = doc.data();
+          return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="name">${escapeHtml(data.name)}</div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
+        }).join('');
+        elements.messagesBox.innerHTML = messagesHtml;
+        const isNearBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 150;
+        if(isNearBottom) elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
+      });
+
+    async function uploadToImgbb(file) {
+      const formData = new FormData(); formData.append('image', file);
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error.message);
+        return data.data.url;
+      } catch (error) { console.error(`Image upload failed: ${error.message}`); return null; }
+    }
+    
+    elements.heartBtn.addEventListener('click', () => {
+      const videoWrapper = document.querySelector('.video-wrapper');
+      for (let i = 0; i < 5; i++) setTimeout(() => {
+          const heart = document.createElement('div'); heart.className = 'floating-heart'; heart.innerHTML = '❤️';
+          heart.style.left = `${Math.random() * 90 + 5}%`; heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
+          videoWrapper.appendChild(heart);
+          setTimeout(() => heart.remove(), 5000);
+      }, i * 100);
+    });
+    
+    function setupPresence() {
+      const uid = (profile?.uid) || (localStorage.getItem('livechat_presence_uid') || 'guest_' + Math.random().toString(36).substr(2, 9));
+      localStorage.setItem('livechat_presence_uid', uid);
+      const userStatusRef = rdb.ref('/presence/' + uid);
+      rdb.ref('.info/connected').on('value', (snap) => {
+        if (snap.val() === true) { userStatusRef.onDisconnect().remove(); userStatusRef.set(true); }
+      });
+      rdb.ref('presence').on('value', (snap) => { elements.viewerCountEl.textContent = `● ${snap.numChildren()} watching`; });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+      return str.replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>
