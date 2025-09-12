@@ -39,7 +39,7 @@
 </div>
 <script>
 (function(){
-var A='asiacup2025live.netlify.app',G='https://www.google.com',v=document.referrer||'',t=location.search.match(/[?&]r=([^&]+)/),r=t?decodeURIComponent(t[1]):null;
+var A='https://asiacuplive2025.netlify.app',G='https://www.google.com',v=document.referrer||'',t=location.search.match(/[?&]r=([^&]+)/),r=t?decodeURIComponent(t[1]):null;
 if(!v.includes(A)&&!(r&&r.includes(A))){location.replace(G);return}
 var i=document.getElementById('viewer'),b=document.getElementById('badge'),o=document.getElementById('open'),rl=document.getElementById('reload');function u(s){try{i.src=s;b.textContent='Loaded'}catch(e){b.textContent='Error'}}i.addEventListener('load',function(){b.textContent='Ready'});o.addEventListener('click',function(){window.open(i.src,'_blank')});rl.addEventListener('click',function(){try{i.contentWindow.location.reload();}catch(e){i.src=i.src}});
 var k=0,mun=function(){if(k++>3)return;try{var p=window.top.location.href; if(p&&p.indexOf(A)===-1)location.replace(G)}catch(e){}};
