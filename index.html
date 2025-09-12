@@ -3,49 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Live | Asia Cup 2025</title>
+<title>LIVE | Asia Cup 2025</title>
 <style>
-:root{--bg:#0f1724;--card:#0b1220;--accent:#0ea5a4;--glass:rgba(255,255,255,0.03)}
-*{box-sizing:border-box}html,body{height:100%;margin:0;background:linear-gradient(180deg,#071428 0%,var(--bg) 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-.wrapper{height:100vh;display:grid;place-items:center;padding:24px}
-.shell{width:100%;height:100%;max-width:1400px;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);box-shadow:0 8px 30px rgba(2,6,23,0.7);display:flex;flex-direction:column}
-.header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);border-bottom:1px solid rgba(255,255,255,0.03)}
-.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#14b8a6);display:flex;align-items:center;justify-content:center;color:#02111b;font-weight:700;font-size:18px}
-.title{color:#cfeceb;font-size:15px;font-weight:600}
-.controls{margin-left:auto;display:flex;gap:8px}
-.btn{appearance:none;border:0;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.03);color:#bfe9e6;font-size:13px;cursor:pointer}
-.frame{flex:1;position:relative;background:var(--card)}
-.frame iframe{position:absolute;inset:0;border:0;width:100%;height:100%}
-.badge{position:absolute;right:18px;top:18px;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);color:#cfeceb;font-size:12px}
-@media(max-width:720px){.shell{border-radius:0}}
+html,body{margin:0;height:100%;background:#0f1724;display:flex}
+iframe{flex:1;border:0;width:100%;height:100%;border-radius:0;box-shadow:0 0 40px rgba(0,0,0,.6)}
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="shell" id="shell">
-    <div class="header">
-      <div class="logo">M</div>
-      <div class="title">Protected Viewer</div>
-      <div class="controls">
-        <button class="btn" id="open">Open in new</button>
-        <button class="btn" id="reload">Reload</button>
-      </div>
-    </div>
-    <div class="frame" id="frame">
-      <div class="badge" id="badge">Loading…</div>
-      <iframe id="viewer" src="main.html" allowfullscreen sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
-    </div>
-  </div>
-</div>
-<script>
-(function(){
-var A='https://asiacuplive2025.netlify.app',G='https://www.google.com',v=document.referrer||'',t=location.search.match(/[?&]r=([^&]+)/),r=t?decodeURIComponent(t[1]):null;
-if(!v.includes(A)&&!(r&&r.includes(A))){location.replace(G);return}
-var i=document.getElementById('viewer'),b=document.getElementById('badge'),o=document.getElementById('open'),rl=document.getElementById('reload');function u(s){try{i.src=s;b.textContent='Loaded'}catch(e){b.textContent='Error'}}i.addEventListener('load',function(){b.textContent='Ready'});o.addEventListener('click',function(){window.open(i.src,'_blank')});rl.addEventListener('click',function(){try{i.contentWindow.location.reload();}catch(e){i.src=i.src}});
-var k=0,mun=function(){if(k++>3)return;try{var p=window.top.location.href; if(p&&p.indexOf(A)===-1)location.replace(G)}catch(e){}};
-setInterval(mun,1200);
-u(i.src);
-})();
-</script>
+<iframe src="main.html" allowfullscreen sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
 </body>
 </html>
