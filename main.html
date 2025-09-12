@@ -18,44 +18,41 @@
     html, body { height: 100%; overflow: hidden; margin: 0; background-color: var(--bg-darker); }
     body { 
       color: var(--text-light); font-family: var(--font-family); 
-      display: flex; flex-direction: column; /* নতুন লেআউটের জন্য */
+      display: flex; flex-direction: column;
     }
     
-    /* === নতুন লেআউট স্টাইল শুরু === */
     .video-container {
         flex-shrink: 0;
         background-color: #000;
         width: 100%;
-        line-height: 0; /* অতিরিক্ত স্পেস দূর করতে */
+        line-height: 0;
+        position: relative; /* অ্যাড ওভারলের জন্য */
     }
     .app-container {
       display: flex; flex-direction: column;
-      flex-grow: 1; /* বাকি সব জায়গা নিবে */
+      flex-grow: 1;
       max-width: 800px;
       width: 100%;
       margin: 0 auto;
       background-color: var(--bg-darker);
-      overflow: hidden; /* গুরুত্বপূর্ণ */
+      overflow: hidden;
     }
-    /* === নতুন লেআউট স্টাইল শেষ === */
 
-    /* === ভিডিও প্লেয়ার স্টাইল শুরু === */
     .video-wrapper { 
       position: relative; 
       background-color: #000; 
       overflow: hidden;
       width: 100%;
-      aspect-ratio: 16 / 9; /* ভিডিওর আকার ঠিক রাখবে */
-      max-height: 75vh; /* বড় স্ক্রিনে অতিরিক্ত লম্বা হওয়া থেকে বাঁচাবে */
+      aspect-ratio: 16 / 9;
+      max-height: 75vh;
     }
     .video-wrapper video {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* ভিডিও যেন কেটে না যায় */
+      object-fit: contain;
       display: block;
     }
 
-    /* লোডার স্টাইল */
     .video-loader {
         position: absolute; top: 50%; left: 50%; width: 50px; height: 50px;
         border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: var(--accent);
@@ -65,7 +62,6 @@
     .video-wrapper.loading .video-loader { display: block; }
     @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-    /* নতুন মিনিমালিস্ট কন্ট্রোল */
     .video-overlay-controls {
       position: absolute; bottom: 0; left: 0; right: 0;
       padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
@@ -100,7 +96,6 @@
     .control-btn:hover { color: var(--accent); }
     .control-btn:hover svg { transform: scale(1.1); }
     
-    /* আনমিউট ওভারলে */
     #unmuteOverlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
@@ -109,8 +104,36 @@
     }
     #unmuteOverlay svg { width: 64px; height: 64px; margin-bottom: 10px; }
     #unmuteOverlay p { font-size: 18px; font-weight: 500; text-shadow: 0 1px 3px #000; }
-    /* === ভিডিও প্লেয়ার স্টাইল শেষ === */
     
+    /* === নতুন অ্যাডভার্টাইজমেন্ট স্টাইল === */
+    #adOverlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #000; z-index: 50;
+        display: none; /* ডিফল্টভাবে হাইড থাকবে */
+        justify-content: center; align-items: center;
+    }
+    #adOverlay video, #adOverlay img {
+        max-width: 100%; max-height: 100%;
+        display: none; /* ডিফল্টভাবে উভয়ই হাইড থাকবে */
+    }
+
+    /* === রিয়েক্ট অ্যানিমেশন স্টাইল === */
+    .floating-heart {
+        position: absolute;
+        bottom: 20px;
+        font-size: 24px;
+        opacity: 1;
+        animation: floatUp 4s ease-out forwards;
+        pointer-events: none; /* যাতে ক্লিক না করা যায় */
+        z-index: 25;
+    }
+    @keyframes floatUp {
+        to {
+            transform: translateY(-300px);
+            opacity: 0;
+        }
+    }
+
     .server-selection {
         padding: 10px 16px; background-color: var(--bg-dark); display: flex;
         gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0;
@@ -143,7 +166,7 @@
     .message .content { background-color: var(--bg-dark); padding: 8px 12px; border-radius: 12px; border-top-left-radius: 0; }
     .message .content .name { font-weight: 600; font-size: 13px; color: var(--accent); margin-bottom: 4px; }
     .message .content .text { font-size: 15px; color: var(--text-light); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
-    .message .content .chat-image { max-width: 100%; border-radius: 8px; margin-top: 8px; display: block; }
+    .message .content .chat-image { max-width: 100%; border-radius: 8px; margin-top: 8px; display: block; cursor: pointer; }
     
     .input-wrapper { flex-shrink: 0; background-color: var(--bg-dark); }
     #imagePreviewBox, #profileStatusBox { padding: 0 16px; }
@@ -184,7 +207,7 @@
   <div class="video-container">
     <div class="video-wrapper">
       <div class="video-loader"></div>
-      <video id="videoPlayer" playsinline autoplay></video> <!-- muted attribute সরানো হয়েছে -->
+      <video id="videoPlayer" playsinline autoplay></video>
       
       <div id="unmuteOverlay">
         <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
@@ -198,6 +221,13 @@
         </button>
       </div>
     </div>
+    
+    <!-- নতুন অ্যাডভার্টাইজমেন্ট ওভারলে -->
+    <div id="adOverlay">
+        <video id="adVideo" playsinline></video>
+        <img id="adImage" src="" alt="Advertisement">
+    </div>
+
     <div class="server-selection" id="serverSelection"></div>
   </div>
 
@@ -264,7 +294,6 @@
     const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
     const PROFILE_KEY = 'livechat_profile_v5';
 
-    // === সার্ভার লিস্ট আপডেট করা হয়েছে ===
     const videoServers = [
         { name: 'English', url: 'https://tvsen5.aynaott.com/Ptvsports/tracks-v1a1/mono.ts.m3u8' },
         { name: 'Hindi', url: 'https://tataplay.slivcdn.com/hls/live/2020591-b/TEN3HD/hdntl=exp=1757596014~acl=%2f*~id=2647ed03-f767-417e-85e7-0e1851beca72~data=hdntl~hmac=b351b40907a7af9591d65f76155fdacf531211dffa7a39de5bedc693fc27f4b9/master_3500.m3u8' }
@@ -276,6 +305,7 @@
 
     const getEl = (id) => document.getElementById(id);
     const elements = {
+      videoPlayer: getEl('videoPlayer'), adOverlay: getEl('adOverlay'), adVideo: getEl('adVideo'), adImage: getEl('adImage'),
       messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'),
       sendBtn: getEl('sendBtn'), heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'),
       profileModal: getEl('profileModal'), imageUploadBtn: getEl('imageUploadBtn'), imageInput: getEl('imageInput'),
@@ -283,7 +313,7 @@
       profileStatusBox: getEl('profileStatusBox'), createProfileBtn: getEl('createProfileBtn'),
       uploadingText: getEl('uploading'),
       serverSelectionBox: getEl('serverSelection'),
-      unmuteOverlay: getEl('unmuteOverlay') // নতুন এলিমেন্ট
+      unmuteOverlay: getEl('unmuteOverlay')
     };
     
     let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
@@ -297,56 +327,48 @@
       
       renderProfileStatus();
       setupPresence();
+      setupAdListener(); // নতুন অ্যাড লিসেনার
     });
     
     function initializeVideoPlayer() {
       const videoWrapper = document.querySelector('.video-wrapper');
-      const video = getEl('videoPlayer');
       const fullscreenBtn = getEl('fullscreenBtn');
       
-      video.muted = false; // ডিফল্টভাবে আনমিউট থাকবে
+      elements.videoPlayer.muted = false;
 
-      // সঠিক কোড (নতুনটি)
-function toggleFullscreen() {
-  // ভিডিওর মূল কন্টেইনারকে টার্গেট করা হয়েছে
-  const videoWrapper = document.querySelector('.video-wrapper');
-
-  if (!document.fullscreenElement) {
-    // এখন শুধুমাত্র videoWrapper কেই ফুলস্ক্রিন করা হচ্ছে
-    videoWrapper.requestFullscreen().catch(err => {
-      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-    });
-    // মোবাইলের জন্য স্ক্রিন ল্যান্ডস্কেপ করার চেষ্টা করা
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('landscape').catch(() => {});
-    }
-  } else {
-    document.exitFullscreen();
-    // ফুলস্ক্রিন থেকে বের হওয়ার সময় ল্যান্ডস্কেপ আনলক করা
-    if (screen.orientation && screen.orientation.unlock) {
-      screen.orientation.unlock();
-    }
-  }
-}
+      function toggleFullscreen() {
+          const container = document.querySelector('.video-container'); // পুরো কন্টেইনারকে ফুলস্ক্রিন করা হবে
+          if (!document.fullscreenElement) {
+              container.requestFullscreen().catch(err => {
+                  alert(`Fullscreen error: ${err.message}`);
+              });
+              if (screen.orientation && screen.orientation.lock) {
+                  screen.orientation.lock('landscape').catch(() => {});
+              }
+          } else {
+              document.exitFullscreen();
+              if (screen.orientation && screen.orientation.unlock) {
+                  screen.orientation.unlock();
+              }
+          }
+      }
       
       fullscreenBtn.addEventListener('click', toggleFullscreen);
 
       elements.unmuteOverlay.addEventListener('click', () => {
-        const playPromise = video.play();
+        const playPromise = elements.videoPlayer.play();
         if (playPromise !== undefined) {
             playPromise.then(() => {
-                video.muted = false;
+                elements.videoPlayer.muted = false;
                 elements.unmuteOverlay.style.display = 'none';
-            }).catch(error => {
-                console.error("Could not play video:", error);
-            });
+            }).catch(error => { console.error("Play error:", error); });
         }
       });
 
-      video.addEventListener('waiting', () => videoWrapper.classList.add('loading'));
-      video.addEventListener('canplay', () => videoWrapper.classList.remove('loading'));
-      video.addEventListener('playing', () => videoWrapper.classList.remove('loading'));
-      video.addEventListener('error', () => videoWrapper.classList.remove('loading'));
+      elements.videoPlayer.addEventListener('waiting', () => videoWrapper.classList.add('loading'));
+      elements.videoPlayer.addEventListener('canplay', () => videoWrapper.classList.remove('loading'));
+      elements.videoPlayer.addEventListener('playing', () => videoWrapper.classList.remove('loading'));
+      elements.videoPlayer.addEventListener('error', () => videoWrapper.classList.remove('loading'));
     }
 
     function renderServerButtons() {
@@ -369,19 +391,18 @@ function toggleFullscreen() {
 
     function loadVideoSource(url) {
         const videoWrapper = document.querySelector('.video-wrapper');
-        const video = getEl('videoPlayer');
         videoWrapper.classList.add('loading');
 
         if (hls) hls.destroy();
 
         const playVideoWithSound = () => {
-            const playPromise = video.play();
+            const playPromise = elements.videoPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    video.muted = false;
+                    elements.videoPlayer.muted = false;
                     elements.unmuteOverlay.style.display = 'none';
                 }).catch(error => {
-                    console.log("Autoplay with sound was blocked. Showing unmute overlay.");
+                    console.log("Autoplay blocked. Showing unmute overlay.");
                     elements.unmuteOverlay.style.display = 'flex';
                 });
             }
@@ -390,14 +411,58 @@ function toggleFullscreen() {
         if (Hls.isSupported() && url.includes('.m3u8')) {
             hls = new Hls();
             hls.loadSource(url);
-            hls.attachMedia(video);
+            hls.attachMedia(elements.videoPlayer);
             hls.on(Hls.Events.MANIFEST_PARSED, playVideoWithSound);
             hls.on(Hls.Events.ERROR, (event, data) => { if (data.fatal) console.error('HLS fatal error:', data); });
         } else {
-            video.src = url;
-            video.addEventListener('canplaythrough', playVideoWithSound, { once: true });
+            elements.videoPlayer.src = url;
+            elements.videoPlayer.addEventListener('canplaythrough', playVideoWithSound, { once: true });
         }
     }
+
+    // === অ্যাডভার্টাইজমেন্ট সিস্টেম ফাংশন ===
+    function setupAdListener() {
+        const adRef = rdb.ref('advertisement');
+        adRef.on('value', (snapshot) => {
+            const adData = snapshot.val();
+            if (adData && adData.isActive) {
+                playAd(adData);
+            } else {
+                stopAd();
+            }
+        });
+    }
+
+    function playAd(adData) {
+        elements.videoPlayer.pause();
+        elements.adOverlay.style.display = 'flex';
+        
+        if (adData.type === 'video') {
+            elements.adImage.style.display = 'none';
+            elements.adVideo.style.display = 'block';
+            elements.adVideo.src = adData.url;
+            elements.adVideo.play();
+            // ভিডিও শেষ হলে বিজ্ঞাপন বন্ধ হবে
+            elements.adVideo.onended = () => {
+                rdb.ref('advertisement').remove(); // অ্যাডমিন প্যানেল থেকেও অ্যাড বন্ধ হয়ে যাবে
+            };
+        } else if (adData.type === 'image') {
+            elements.adVideo.style.display = 'none';
+            elements.adImage.style.display = 'block';
+            elements.adImage.src = adData.url;
+        }
+    }
+
+    function stopAd() {
+        elements.adOverlay.style.display = 'none';
+        elements.adVideo.pause();
+        elements.adVideo.src = '';
+        elements.adImage.src = '';
+        elements.videoPlayer.play().catch(() => {
+          // যদি প্লেব্যাক ফেইল হয় (যেমন ইউজার ইন্টার‍্যাকশন ছাড়া), তাহলে কিছু করার দরকার নেই
+        });
+    }
+    // === অ্যাড সিস্টেম শেষ ===
 
     const renderProfileStatus = () => {
       if (profile) {
@@ -422,11 +487,16 @@ function toggleFullscreen() {
     const openProfileModal = () => { if (!profile) elements.profileModal.style.display = 'flex'; };
     elements.msgInput.addEventListener('focus', openProfileModal);
 
-    elements.msgInput.addEventListener('input', () => {
+    // আপডেট করা সেন্ড বাটন লজিক
+    const updateSendButtonState = () => {
         const hasText = elements.msgInput.value.trim().length > 0;
-        elements.sendBtn.classList.toggle('visible', hasText);
-        elements.heartBtn.classList.toggle('hidden', hasText);
-    });
+        const hasImage = selectedImageFile !== null;
+        const hasContent = hasText || hasImage;
+        elements.sendBtn.classList.toggle('visible', hasContent);
+        elements.heartBtn.classList.toggle('hidden', hasContent);
+    };
+
+    elements.msgInput.addEventListener('input', updateSendButtonState);
 
     elements.avatarFile.onchange = (e) => {
         const file = e.target.files[0];
@@ -473,16 +543,25 @@ function toggleFullscreen() {
       if (selectedImageFile) {
         elements.imagePreviewBox.innerHTML = `<div class="image-preview"><img src="${URL.createObjectURL(selectedImageFile)}" alt="preview"><span class="filename">${escapeHtml(selectedImageFile.name)}</span><button onclick="cancelImageUpload()">&times;</button></div>`;
       }
+      updateSendButtonState(); // ছবি সিলেক্ট করার পর বাটন আপডেট
     };
-    window.cancelImageUpload = () => { selectedImageFile = null; elements.imageInput.value = ''; elements.imagePreviewBox.innerHTML = ''; };
+    window.cancelImageUpload = () => { 
+        selectedImageFile = null; 
+        elements.imageInput.value = ''; 
+        elements.imagePreviewBox.innerHTML = ''; 
+        updateSendButtonState(); // ছবি বাতিল করার পর বাটন আপডেট
+    };
 
     const sendMessage = async () => {
       if (!profile) { openProfileModal(); return; }
       const text = elements.msgInput.value.trim();
       if (!text && !selectedImageFile) return;
-      const tempImageFile = selectedImageFile, tempText = text;
-      elements.msgInput.value = ''; cancelImageUpload();
-      elements.msgInput.dispatchEvent(new Event('input'));
+
+      const tempImageFile = selectedImageFile;
+      const tempText = text;
+      
+      elements.msgInput.value = ''; 
+      cancelImageUpload();
 
       try {
         let imageUrl = null;
@@ -499,7 +578,7 @@ function toggleFullscreen() {
       .onSnapshot(snapshot => {
         const messagesHtml = snapshot.docs.reverse().map(doc => {
           const data = doc.data();
-          return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="name">${escapeHtml(data.name)}</div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
+          return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="name">${escapeHtml(data.name)}</div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="window.open('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
         }).join('');
         elements.messagesBox.innerHTML = messagesHtml;
         const isNearBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 150;
@@ -516,14 +595,20 @@ function toggleFullscreen() {
       } catch (error) { console.error(`Image upload failed: ${error.message}`); return null; }
     }
     
+    // রিয়েক্ট বাটনের কার্যকারিতা যোগ করা হয়েছে
     elements.heartBtn.addEventListener('click', () => {
-      const videoWrapper = document.querySelector('.video-wrapper');
-      for (let i = 0; i < 5; i++) setTimeout(() => {
-          const heart = document.createElement('div'); heart.className = 'floating-heart'; heart.innerHTML = '❤️';
-          heart.style.left = `${Math.random() * 90 + 5}%`; heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
-          videoWrapper.appendChild(heart);
-          setTimeout(() => heart.remove(), 5000);
-      }, i * 100);
+      const videoContainer = document.querySelector('.video-container');
+      for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+              const heart = document.createElement('div');
+              heart.className = 'floating-heart';
+              heart.innerHTML = '❤️';
+              heart.style.left = `${Math.random() * 90 + 5}%`;
+              heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
+              videoContainer.appendChild(heart);
+              setTimeout(() => heart.remove(), 5000);
+          }, i * 100);
+      }
     });
     
     function setupPresence() {
