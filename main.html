@@ -164,13 +164,13 @@
   <div class="modal-overlay" id="lightbox"><div class="modal-content"><img id="lightboxImage" src=""><button id="lightboxClose">&times;</button></div></div>
   <div class="modal-overlay" id="withdrawModal"><div class="modal-content"><h2>Withdraw Balance</h2><p>You can withdraw 20 BDT via Grameenphone mobile recharge. Please enter your GP number (017... or 013...).</p><input id="withdrawNumberInput" type="tel" placeholder="e.g., 01700000000" /><button id="submitWithdrawBtn">Submit Request (20 BDT)</button></div></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+      <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database-compat.js"></script>
 
   <script>
-        const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
+    const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
     const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
     const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
     const PROFILE_KEY = 'livechat_profile_v8';
@@ -236,10 +236,70 @@
     }
     function handleVideoEnd() { if (state.isAdPlaying && state.currentAdData.type === 'video') { advancePlaylist(); } }
     function advancePlaylist() { const { playlist, currentIndex } = state.currentAdData.playlistData; const nextIndex = (currentIndex + 1) % playlist.length; rdb.ref('advertisement/currentIndex').set(nextIndex); }
-    function toggleFullscreen() { const container = document.querySelector('.video-container'); if (!document.fullscreenElement) { container.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(() => {}); } else { document.exitFullscreen(); if (screen.orientation?.unlock) screen.orientation.unlock(); } }
+    
+    function toggleFullscreen() { 
+      const container = document.getElementById('videoWrapper'); 
+      if (!document.fullscreenElement) { 
+        container.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); 
+        if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(() => {}); 
+      } else { 
+        document.exitFullscreen(); 
+        if (screen.orientation?.unlock) screen.orientation.unlock(); 
+      } 
+    }
+
     function showControls() { elements.videoWrapper.classList.add('controls-visible'); clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => elements.videoWrapper.classList.remove('controls-visible'), 3000); }
     function listenForServers() { rdb.ref('servers').on('value', snapshot => { const servers = snapshot.val() || {}; const serverList = Object.keys(servers).map(key => ({...servers[key]})); elements.serverSelectionBox.innerHTML = '<span>Servers:</span>'; if (serverList.length === 0) { elements.serverSelectionBox.innerHTML += '<span>No servers available.</span>'; return; } let activeUrl = document.querySelector('.server-btn.active')?.dataset.url; serverList.forEach(server => { const button = document.createElement('button'); button.className = 'server-btn'; button.textContent = server.name; button.dataset.url = server.url; if(server.url === activeUrl) button.classList.add('active'); button.addEventListener('click', () => { if (state.isAdPlaying) return; document.querySelector('.server-btn.active')?.classList.remove('active'); button.classList.add('active'); loadSource(server.url); }); elements.serverSelectionBox.appendChild(button); }); if (!activeUrl && !state.isAdPlaying && elements.serverSelectionBox.querySelector('.server-btn')) { elements.serverSelectionBox.querySelector('.server-btn').click(); } }); }
-    function loadSource(url, isLiveStream = true) { if (isLiveStream) state.currentLiveUrl = url; elements.videoWrapper.classList.add('loading'); if (hls) hls.destroy(); if (userHasInteracted) elements.videoPlayer.muted = false; if (isLiveStream && Hls.isSupported() && url.includes('.m3u8')) { hls = new Hls(); hls.loadSource(url); hls.attachMedia(elements.videoPlayer); hls.on(Hls.Events.MANIFEST_PARSED, () => { elements.videoPlayer.play().catch(e => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); }); }); } else { elements.videoPlayer.src = url; elements.videoPlayer.play().catch(e => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); }); } }
+    
+    // *** পরিবর্তন: স্মার্ট লিঙ্ক হ্যান্ডলিং এবং iframe Fallback ***
+    function loadSource(url, isLiveStream = true) {
+        if (isLiveStream) state.currentLiveUrl = url;
+        elements.videoWrapper.classList.add('loading');
+        
+        // আগের কোনো iframe বা hls instance থাকলে সেটা পরিষ্কার করি
+        const existingIframe = elements.videoWrapper.querySelector('iframe');
+        if (existingIframe) existingIframe.remove();
+        if (hls) hls.destroy();
+
+        // ভিডিও প্লেয়ার আবার দৃশ্যমান করি এবং মিউট স্ট্যাটাস ঠিক রাখি
+        elements.videoPlayer.style.display = 'block';
+        if (userHasInteracted) elements.videoPlayer.muted = false;
+
+        // চেক করি এটি ভিডিও লিঙ্ক (.m3u8) নাকি ওয়েবসাইট লিঙ্ক
+        if (isLiveStream && url.includes('.m3u8') && Hls.isSupported()) {
+            // এটি একটি HLS ভিডিও লিঙ্ক, hls.js দিয়ে চেষ্টা করি
+            hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(elements.videoPlayer);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                elements.videoPlayer.play().catch(() => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); });
+            });
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                if (data.fatal) {
+                    console.error('HLS.js Error:', data.details, 'Falling back to iframe.');
+                    hls.destroy();
+                    switchToIframe(url); // ব্যর্থ হলে iframe এ চলে যাই
+                }
+            });
+        } else {
+            // এটি একটি সাধারণ ভিডিও বা ওয়েবসাইট লিঙ্ক, সরাসরি iframe ব্যবহার করি
+            switchToIframe(url);
+        }
+    }
+
+    function switchToIframe(url) {
+        elements.videoPlayer.style.display = 'none'; // মূল ভিডিও প্লেয়ার লুকিয়ে ফেলি
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        iframe.allow = "autoplay; encrypted-media; fullscreen";
+        iframe.allowFullscreen = true;
+        elements.videoWrapper.appendChild(iframe);
+        elements.videoWrapper.classList.remove('loading');
+    }
+
     function listenForAds() { rdb.ref('advertisement').on('value', snapshot => { const adData = snapshot.val(); if (adData && adData.isActive && adData.playlist?.length > 0) { const currentAd = adData.playlist[adData.currentIndex]; state.currentAdData = { ...currentAd, playlistData: adData }; playAd(currentAd); } else if (state.isAdPlaying) { restoreLiveStream(); } }); }
     function playAd(ad) { if (!state.isAdPlaying) { if (hls) hls.destroy(); } state.isAdPlaying = true; clearTimeout(imageAdTimeout); elements.liveIndicator.style.display = 'none'; elements.adIndicator.style.display = 'block'; elements.adIndicator.textContent = `Ad: ${ad.name}`; if (ad.type === 'video') { elements.adImageContainer.style.display = 'none'; elements.videoPlayer.style.display = 'block'; loadSource(ad.url, false); } else { elements.videoPlayer.style.display = 'none'; elements.videoPlayer.pause(); elements.adImageContainer.style.backgroundImage = `url(${ad.url})`; elements.adImageContainer.style.display = 'block'; imageAdTimeout = setTimeout(advancePlaylist, IMAGE_AD_DURATION); } }
     function restoreLiveStream() { state.isAdPlaying = false; clearTimeout(imageAdTimeout); elements.adIndicator.style.display = 'none'; elements.liveIndicator.style.display = 'flex'; elements.adImageContainer.style.display = 'none'; elements.videoPlayer.style.display = 'block'; if (state.currentLiveUrl) { loadSource(state.currentLiveUrl, true); } }
@@ -273,9 +333,7 @@
     }
     
     function sendHeartReaction() {
-        if (profile) {
-            updateUserPoints(profile.uid, 2); // 2 points for heart reaction
-        }
+        if (profile) { updateUserPoints(profile.uid, 2); }
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerHTML = '❤️';
@@ -312,14 +370,11 @@
         if (tempText) messageData.text = tempText;
         if (imageUrl) messageData.imageUrl = imageUrl;
         await firestore.collection('chats').add(messageData);
-
-        if (tempText) {
-            updateUserPoints(profile.uid, 5); // 5 points for a text message
-        }
-
+        if (tempText) { updateUserPoints(profile.uid, 5); }
       } catch (e) { console.error("Send failed:", e); }
     }
     
+    // *** পরিবর্তন: চ্যাট অটো-স্ক্রল সমস্যার সমাধান ***
     function handleNewMessages(snapshot) {
       elements.messagesBox.innerHTML = snapshot.docs.map(doc => {
         const data = doc.data();
@@ -331,13 +386,18 @@
                 return `<div class="message gift-message"><div class="content"><div class="text">🎁 <strong>${escapeHtml(data.botName)}</strong> gifted <strong>${data.amount} BDT</strong> to <strong>${escapeHtml(data.recipientName)}</strong>!</div></div></div>`;
             case 'withdrawal_notification':
                 return `<div class="message notification-message"><div class="content"><strong>${escapeHtml(data.name)}</strong> has submitted a withdrawal request for <strong>${data.amount} BDT</strong>.</div></div>`;
-            default: // 'message'
+            default:
                 return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
         }
       }).join('');
-      elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
+      
+      // এই setTimeout নিশ্চিত করে যে DOM আপডেট হওয়ার পরই স্ক্রল হবে
+      setTimeout(() => {
+          elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
+      }, 0);
     }
     
+    // --- এর পরের কোডে কোনো পরিবর্তন করা হয়নি ---
     function initModals() {
       elements.gifBtn.onclick = () => { if (!profile) elements.profileModal.style.display = 'flex'; else openGifModal(); };
       elements.gifModal.onclick = (e) => { if (e.target === elements.gifModal) elements.gifModal.style.display = 'none'; };
@@ -458,9 +518,8 @@
       });
     }
 
-    // --- New Wallet & Bot Logic ---
     function listenForBalanceChanges(uid) {
-      if (balanceListener) balanceListener.off(); // Remove old listener
+      if (balanceListener) balanceListener.off();
       const userBalanceRef = rdb.ref('users/' + uid + '/balance');
       balanceListener = userBalanceRef.on('value', snapshot => {
         userBalance = snapshot.val() || 0;
@@ -524,7 +583,6 @@
       }
     }
 
-    // --- Smart Bot Logic ---
     async function updateUserPoints(uid, pointsToAdd) {
         if (!uid) return;
         const userRef = rdb.ref('users/' + uid);
@@ -542,9 +600,7 @@
             const onlineUsers = presenceSnap.val();
             if (onlineUsers) {
                 const userUIDs = Object.values(onlineUsers).map(u => u.uid).filter(uid => uid && uid.startsWith('u_'));
-                for (const uid of userUIDs) {
-                    updateUserPoints(uid, 1); // 1 point per minute of watch time
-                }
+                for (const uid of userUIDs) { updateUserPoints(uid, 1); }
             }
             const usersSnap = await rdb.ref('users').orderByChild('points').startAt(50).get();
             const eligibleUsers = usersSnap.val();
@@ -557,16 +613,13 @@
             const userRef = rdb.ref('users/' + luckyUser.uid);
             
             const giftAmount = 1;
-            await userRef.update({
-                balance: (luckyUser.balance || 0) + giftAmount,
-                points: 0
-            });
+            await userRef.update({ balance: (luckyUser.balance || 0) + giftAmount, points: 0 });
             
             const profileSnap = await firestore.collection('chats').where('uid', '==', luckyUser.uid).limit(1).get();
             let recipientName = "A User";
             if (!profileSnap.empty) {
                 recipientName = profileSnap.docs[0].data().name;
-            } else { // Fallback to get name from presence if not in recent chats
+            } else {
                 const presenceData = onlineUsers ? Object.values(onlineUsers).find(u => u.uid === luckyUser.uid) : null;
                 if(presenceData && presenceData.name) recipientName = presenceData.name;
             }
@@ -577,13 +630,12 @@
             });
 
         } catch (error) { console.error("Ti Bot Error:", error); }
-      }, 60000); // Runs every 60 seconds
+      }, 60000);
     }
 
-    // --- Utility Functions ---
     async function uploadToImgbb(file) { const formData = new FormData(); formData.append('image', file); const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData }); const data = await res.json(); if (!data.success) throw new Error(data.error.message); return data.data.url; }
     function escapeHtml(str) { return str?.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]) || ''; }
     const debounce = (func, delay) => { let timeout; return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func(...args), delay); }; };
-</script>
+  </script>
 </body>
 </html>
