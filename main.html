@@ -163,7 +163,7 @@
     const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
     const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
     const PROFILE_KEY = 'livechat_profile_v7';
-    const IMAGE_AD_DURATION = 4000; // বিজ্ঞাপন ৪ সেকেন্ড দেখানো হবে
+    const IMAGE_AD_DURATION = 4000;
     
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
@@ -189,6 +189,15 @@
     let selectedImageFile = null; let hls; let controlsTimeout; let typingTimeout; let imageAdTimeout;
     let state = { isAdPlaying: false, currentLiveUrl: null, currentAdData: null };
     let userHasInteracted = false;
+
+    // --- নতুন সংযোজন: ব্রাউজার বন্ধ করলে টাইপিং স্ট্যাটাস মুছে ফেলা ---
+    const removeTypingStatusOnUnload = () => {
+        if (profile && profile.uid) {
+            rdb.ref('/typing/' + profile.uid).remove();
+        }
+    };
+    window.addEventListener('pagehide', removeTypingStatusOnUnload);
+    // -----------------------------------------------------------------
 
     // --- Core Initializations ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -256,7 +265,6 @@
             if (serverList.length === 0) {
                 elements.serverSelectionBox.innerHTML += '<span>No servers available.</span>'; return;
             }
-            
             let activeUrl = document.querySelector('.server-btn.active')?.dataset.url;
             serverList.forEach(server => {
                 const button = document.createElement('button');
@@ -279,16 +287,10 @@
     }
 
     function loadSource(url, isLiveStream = true) {
-        if (isLiveStream) {
-            state.currentLiveUrl = url;
-        }
+        if (isLiveStream) state.currentLiveUrl = url;
         elements.videoWrapper.classList.add('loading');
-        if (hls) {
-            hls.destroy();
-        }
-        if (userHasInteracted) {
-            elements.videoPlayer.muted = false;
-        }
+        if (hls) hls.destroy();
+        if (userHasInteracted) elements.videoPlayer.muted = false;
 
         if (isLiveStream && Hls.isSupported() && url.includes('.m3u8')) {
             hls = new Hls();
@@ -296,17 +298,13 @@
             hls.attachMedia(elements.videoPlayer);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 elements.videoPlayer.play().catch(e => {
-                    if (!userHasInteracted) {
-                        elements.playOverlay.classList.remove('hidden');
-                    }
+                    if (!userHasInteracted) elements.playOverlay.classList.remove('hidden');
                 });
             });
         } else {
             elements.videoPlayer.src = url;
             elements.videoPlayer.play().catch(e => {
-                if (!userHasInteracted) {
-                    elements.playOverlay.classList.remove('hidden');
-                }
+                if (!userHasInteracted) elements.playOverlay.classList.remove('hidden');
             });
         }
     }
@@ -330,16 +328,14 @@
         }
         state.isAdPlaying = true;
         clearTimeout(imageAdTimeout);
-        
         elements.liveIndicator.style.display = 'none';
         elements.adIndicator.style.display = 'block';
         elements.adIndicator.textContent = `Ad: ${ad.name}`;
-
         if (ad.type === 'video') {
             elements.adImageContainer.style.display = 'none';
             elements.videoPlayer.style.display = 'block';
             loadSource(ad.url, false);
-        } else { // Image ad
+        } else {
             elements.videoPlayer.style.display = 'none';
             elements.videoPlayer.pause();
             elements.adImageContainer.style.backgroundImage = `url(${ad.url})`;
@@ -364,25 +360,18 @@
     function initChat() {
       renderProfileStatus();
       elements.msgInput.addEventListener('focus', () => { if (!profile) elements.profileModal.style.display = 'flex'; });
-      
-      // *** উন্নত টাইপিং লজিক ***
       elements.msgInput.addEventListener('input', () => {
         updateSendButtonState();
         if (!profile) return;
-        
         clearTimeout(typingTimeout);
         const typingRef = rdb.ref('/typing/' + profile.uid);
-        
         if (elements.msgInput.value.trim()) {
             typingRef.set(profile.name);
-            typingTimeout = setTimeout(() => {
-                typingRef.remove();
-            }, 2000); // ২ সেকেন্ড পর টাইপিং স্ট্যাটাস মুছে যাবে
+            typingTimeout = setTimeout(() => typingRef.remove(), 2000);
         } else {
             typingRef.remove();
         }
       });
-      
       elements.sendBtn.addEventListener('click', sendMessage);
       elements.msgInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
       elements.imageUploadBtn.onclick = () => { if (!profile) elements.profileModal.style.display = 'flex'; else elements.imageInput.click(); };
@@ -393,29 +382,19 @@
         }
         updateSendButtonState();
       };
-
-      // *** হার্ট রিঅ্যাকশন যোগ করা হয়েছে ***
       elements.heartBtn.addEventListener('click', sendHeartReaction);
-
       firestore.collection('chats').orderBy('createdAt').limitToLast(50).onSnapshot(handleNewMessages);
     }
     
-    // *** হার্ট রিঅ্যাকশন ফাংশন ***
     function sendHeartReaction() {
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerHTML = '❤️';
-        // র্যা ন্ডম পজিশন এবং অ্যানিমেশন ডিলে
         heart.style.left = `${Math.random() * 40 + 30}%`;
         heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
-        
         elements.videoWrapper.appendChild(heart);
-        
-        setTimeout(() => {
-            heart.remove();
-        }, 4000); // অ্যানিমেশন শেষে DOM থেকে মুছে যাবে
+        setTimeout(() => heart.remove(), 4000);
     }
-
 
     const updateSendButtonState = () => {
         const hasContent = elements.msgInput.value.trim() || selectedImageFile;
@@ -433,7 +412,6 @@
       const text = elements.msgInput.value.trim();
       if (!text && !selectedImageFile) return;
       
-      // মেসেজ পাঠানোর সাথে সাথে টাইপিং স্ট্যাটাস মুছে দিন
       clearTimeout(typingTimeout);
       rdb.ref('/typing/' + profile.uid).remove();
 
@@ -456,12 +434,9 @@
         const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
         return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
       }).join('');
-      
-      // *** সবসময় চ্যাট বক্স নিচে স্ক্রল করে রাখবে ***
       elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
     }
     
-    // --- GIF & Modals Logic ---
     function initModals() {
       elements.gifBtn.onclick = () => { if (!profile) elements.profileModal.style.display = 'flex'; else openGifModal(); };
       elements.gifModal.onclick = (e) => { if (e.target === elements.gifModal) elements.gifModal.style.display = 'none'; };
@@ -470,9 +445,7 @@
     }
 
     async function openGifModal() {
-      if (!GIPHY_API_KEY || GIPHY_API_KEY === "YOUR_GIPHY_API_KEY") {
-        return alert("Giphy API Key is not configured.");
-      }
+      if (!GIPHY_API_KEY || GIPHY_API_KEY === "YOUR_GIPHY_API_KEY") return alert("Giphy API Key is not configured.");
       elements.gifModal.style.display = 'flex';
       elements.gifResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>';
       const response = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=30`);
@@ -499,11 +472,7 @@
 
     async function sendGif(gifUrl) {
       if (!profile) return;
-      await firestore.collection('chats').add({
-        ...profile,
-        imageUrl: gifUrl,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      await firestore.collection('chats').add({ ...profile, imageUrl: gifUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     }
     
     window.openLightbox = (url) => {
@@ -511,7 +480,6 @@
         elements.lightbox.style.display = 'flex';
     };
 
-    // --- User Profile & Presence ---
     function renderProfileStatus() {
       if (profile) {
         elements.profileStatusBox.innerHTML = `<div class="profile-status"><img src="${profile.avatar}"><span class="name">As <strong>${escapeHtml(profile.name)}</strong></span><button onclick="signOut()" title="Sign Out">&times;</button></div>`;
@@ -522,7 +490,7 @@
     
     window.signOut = () => {
       if (confirm('Are you sure you want to sign out?')) {
-        if(profile) rdb.ref('/typing/' + profile.uid).remove();
+        removeTypingStatusOnUnload(); // সাইন আউট করার সময়ও স্ট্যাটাস মুছে ফেলবে
         profile = null;
         localStorage.removeItem(PROFILE_KEY);
         renderProfileStatus();
@@ -533,7 +501,6 @@
       const name = getEl('nameInput').value.trim();
       const file = elements.avatarFile.files[0];
       if (!name || !file) return alert('Please provide both name and photo.');
-      
       elements.uploadingText.style.display = 'block';
       elements.createProfileBtn.disabled = true;
       try {
@@ -542,7 +509,7 @@
         localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
         elements.profileModal.style.display = 'none';
         renderProfileStatus();
-        setupPresence(); // প্রোফাইল তৈরির পর onDisconnect সেট করার জন্য আবার কল করা হলো
+        setupPresence();
       } catch (e) {
         alert("Profile creation failed."); console.error(e);
       } finally {
@@ -560,7 +527,6 @@
         if (snap.val()) { 
           userStatusRef.onDisconnect().remove();
           userStatusRef.set(true); 
-          // *** ডিসকানেক্ট হলে টাইপিং স্ট্যাটাস মুছে ফেলার নিয়ম ***
           if(profile) {
             rdb.ref('/typing/' + profile.uid).onDisconnect().remove();
           }
@@ -587,7 +553,6 @@
       });
     }
 
-    // --- Utilities ---
     async function uploadToImgbb(file) {
       const formData = new FormData(); formData.append('image', file);
       const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
