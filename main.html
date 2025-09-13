@@ -254,7 +254,7 @@
   function showControls() { elements.videoWrapper.classList.add('controls-visible'); clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => elements.videoWrapper.classList.remove('controls-visible'), 3000); }
   function listenForServers() { rdb.ref('servers').on('value', snapshot => { const servers = snapshot.val() || {}; const serverList = Object.keys(servers).map(key => ({...servers[key]})); elements.serverSelectionBox.innerHTML = '<span>Servers:</span>'; if (serverList.length === 0) { elements.serverSelectionBox.innerHTML += '<span>No servers available.</span>'; return; } let activeUrl = document.querySelector('.server-btn.active')?.dataset.url; serverList.forEach(server => { const button = document.createElement('button'); button.className = 'server-btn'; button.textContent = server.name; button.dataset.url = server.url; if(server.url === activeUrl) button.classList.add('active'); button.addEventListener('click', () => { if (state.isAdPlaying) return; document.querySelector('.server-btn.active')?.classList.remove('active'); button.classList.add('active'); loadSource(server.url); }); elements.serverSelectionBox.appendChild(button); }); if (!activeUrl && !state.isAdPlaying && elements.serverSelectionBox.querySelector('.server-btn')) { elements.serverSelectionBox.querySelector('.server-btn').click(); } }); }
   
-  // *** পরিবর্তন: স্মার্ট লিঙ্ক হ্যান্ডলিং এবং iframe Fallback ***
+    // *** পরিবর্তন: স্মার্ট লিঙ্ক হ্যান্ডলিং এবং iframe Fallback ***
   function loadSource(url, isLiveStream = true) {
       if (isLiveStream) state.currentLiveUrl = url;
       elements.videoWrapper.classList.add('loading');
@@ -262,30 +262,49 @@
       // আগের কোনো iframe বা hls instance থাকলে সেটা পরিষ্কার করি
       const existingIframe = elements.videoWrapper.querySelector('iframe');
       if (existingIframe) existingIframe.remove();
-      if (hls) hls.destroy();
+      if (hls) {
+          hls.destroy();
+          hls = null; // hls instance রিসেট করি
+      }
+      elements.videoPlayer.src = ''; // আগের সোর্স পরিষ্কার করি
 
       // ভিডিও প্লেয়ার আবার দৃশ্যমান করি এবং মিউট স্ট্যাটাস ঠিক রাখি
       elements.videoPlayer.style.display = 'block';
       if (userHasInteracted) elements.videoPlayer.muted = false;
 
-      // চেক করি এটি ভিডিও লিঙ্ক (.m3u8) নাকি ওয়েবসাইট লিঙ্ক
-      if (isLiveStream && url.includes('.m3u8') && Hls.isSupported()) {
-          // এটি একটি HLS ভিডিও লিঙ্ক, hls.js দিয়ে চেষ্টা করি
+      const isM3U8 = url.includes('.m3u8');
+      // .mp4, .mkv, .webm এর মতো সরাসরি ভিডিও লিঙ্ক চেক করার জন্য Regex
+      const isDirectVideo = /\.(mp4|mkv|webm|mov)(\?.*)?$/.test(url);
+      const isYouTubeEmbed = /youtube\.com\/embed\//.test(url);
+
+      if (isM3U8 && Hls.isSupported()) {
+          // এটি একটি HLS (.m3u8) লিঙ্ক, hls.js ব্যবহার করি
           hls = new Hls();
           hls.loadSource(url);
           hls.attachMedia(elements.videoPlayer);
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
               elements.videoPlayer.play().catch(() => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); });
           });
+          // hls.js এর error handling আগের মতোই থাকবে
           hls.on(Hls.Events.ERROR, (event, data) => {
               if (data.fatal) {
-                  console.error('HLS.js Error:', data.details, 'Falling back to iframe.');
-                  hls.destroy();
-                  switchToIframe(url); // ব্যর্থ হলে iframe এ চলে যাই
+                  console.error('HLS.js Error:', data.details);
               }
           });
+      } else if (isDirectVideo) {
+          // এটি একটি সরাসরি ভিডিও লিঙ্ক (.mp4, .mkv ইত্যাদি), native video player ব্যবহার করি
+          elements.videoPlayer.src = url;
+          elements.videoPlayer.play().catch(() => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); });
+      } else if (isYouTubeEmbed) {
+          // এটি ইউটিউব এম্বেড লিঙ্ক, কন্ট্রোল বাটন ছাড়া iframe এ প্লে করি
+          let embedUrl = new URL(url);
+          embedUrl.searchParams.set('autoplay', '1');
+          embedUrl.searchParams.set('controls', '0'); // ইউটিউবের কন্ট্রোল হাইড করে
+          embedUrl.searchParams.set('modestbranding', '1');
+          embedUrl.searchParams.set('showinfo', '0');
+          switchToIframe(embedUrl.toString());
       } else {
-          // এটি একটি সাধারণ ভিডিও বা ওয়েবসাইট লিঙ্ক, সরাসরি iframe ব্যবহার করি
+          // এটি সম্ভবত একটি ওয়েবসাইট লিঙ্ক, তাই iframe ব্যবহার করি
           switchToIframe(url);
       }
   }
