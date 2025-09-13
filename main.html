@@ -101,6 +101,41 @@
     #lightbox .modal-content { background: none; border: none; width: auto; height: auto; max-width: 90vw; max-height: 90vh; padding: 0; }
     #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
     #lightboxClose { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; background: none; border: none; padding: 0; }
+
+    /* --- নতুন যোগ করা CSS --- */
+    #playOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      z-index: 15; /* ভিডিও লোডারের নিচে কিন্তু ভিডিওর উপরে */
+      transition: opacity 0.3s ease;
+    }
+    #playOverlay.hidden {
+      opacity: 0;
+      pointer-events: none; /* হিডেন থাকা অবস্থায় যাতে ক্লিক না করা যায় */
+    }
+    #playOverlay .play-icon {
+      width: 70px;
+      height: 70px;
+      fill: #fff;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+    }
+    #playOverlay span {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -108,7 +143,17 @@
   <div class="video-container">
     <div class="video-wrapper" id="videoWrapper">
       <div class="video-loader"></div>
-      <video id="videoPlayer" playsinline autoplay></video>
+      <!-- 'muted' অ্যাট্রিবিউট যোগ করা হয়েছে -->
+      <video id="videoPlayer" playsinline autoplay muted></video>
+
+      <!-- নতুন "Click to Play" ওভারলে -->
+      <div id="playOverlay">
+        <svg class="play-icon" viewBox="0 0 24 24">
+          <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+        </svg>
+        <span>Click to Play & Unmute</span>
+      </div>
+
       <div class="ad-image-container" id="adImageContainer"></div>
       <div class="ad-indicator" id="adIndicator">Advertisement</div>
       <div class="video-overlay-controls">
@@ -155,9 +200,9 @@
   <script>
     const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
     const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
-    const GIPHY_API_KEY = "YOUR_GIPHY_API_KEY"; // এখানে আপনার Giphy API কী দিন
+    const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW"; // এখানে আপনার Giphy API কী দিন
     const PROFILE_KEY = 'livechat_profile_v7';
-    const IMAGE_AD_DURATION = 10000; // 10 seconds for image ads
+    const IMAGE_AD_DURATION = 30000; // 10 seconds for image ads
     
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
@@ -175,12 +220,14 @@
       uploadingText: getEl('uploading'), serverSelectionBox: getEl('serverSelection'),
       gifModal: getEl('gifModal'), gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'),
       lightbox: getEl('lightbox'), lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'),
-      typingIndicator: getEl('typingIndicator')
+      typingIndicator: getEl('typingIndicator'),
+      playOverlay: getEl('playOverlay') // নতুন প্লে ওভারলে এলিমেন্ট
     };
     
     let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
     let selectedImageFile = null; let hls; let controlsTimeout; let typingTimeout; let imageAdTimeout;
     let state = { isAdPlaying: false, currentLiveUrl: null, currentAdData: null };
+    let userHasInteracted = false; // নতুন ভ্যারিয়েবল ব্যবহারকারীর ইন্টারঅ্যাকশন ট্র্যাক করার জন্য
 
     // --- Core Initializations ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -188,6 +235,16 @@
       listenForServers(); listenForAds(); listenForTyping();
       setupPresence();
     });
+    
+    // --- নতুন ফাংশন: প্রথম প্লে হ্যান্ডেল করার জন্য ---
+    function handleFirstPlay() {
+      if (userHasInteracted) return; // শুধু একবারই রান হবে
+      userHasInteracted = true;
+      
+      elements.videoPlayer.muted = false; // ভিডিও আনমিউট করুন
+      elements.videoPlayer.play().catch(e => console.warn("Play after interaction failed:", e));
+      elements.playOverlay.classList.add('hidden'); // ওভারলে লুকিয়ে ফেলুন
+    }
 
     // --- Video Player & Ads Logic ---
     function initVideoPlayer() {
@@ -200,6 +257,9 @@
       elements.videoPlayer.addEventListener('waiting', () => elements.videoWrapper.classList.add('loading'));
       ['canplay', 'playing', 'error'].forEach(evt => elements.videoPlayer.addEventListener(evt, () => elements.videoWrapper.classList.remove('loading')));
       elements.videoPlayer.addEventListener('ended', handleVideoEnd);
+
+      // প্লে ওভারলেতে ক্লিক ইভেন্ট যোগ করুন
+      elements.playOverlay.addEventListener('click', handleFirstPlay);
     }
     
     function handleVideoEnd() {
@@ -261,6 +321,7 @@
         });
     }
 
+    // --- loadSource ফাংশনটি আপডেট করা হয়েছে ---
     function loadSource(url, isLiveStream = true) {
         if (isLiveStream) {
             state.currentLiveUrl = url;
@@ -270,19 +331,33 @@
             hls.destroy();
         }
 
-        // Ensure player is unmuted. No conditions, no checks.
-        elements.videoPlayer.muted = false; 
+        // ব্যবহারকারী ক্লিক করে থাকলে তবেই ভিডিও আনমিউট হবে
+        if (userHasInteracted) {
+            elements.videoPlayer.muted = false;
+        }
 
         if (isLiveStream && Hls.isSupported() && url.includes('.m3u8')) {
             hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(elements.videoPlayer);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                elements.videoPlayer.play().catch(e => console.error("HLS Playback Error:", e));
+                elements.videoPlayer.play().catch(e => {
+                    console.error("HLS Playback Error:", e);
+                    // প্লে না হলে ওভারলে আবার দেখান
+                    if (!userHasInteracted) {
+                        elements.playOverlay.classList.remove('hidden');
+                    }
+                });
             });
         } else {
             elements.videoPlayer.src = url;
-            elements.videoPlayer.play().catch(e => console.error("Direct Playback Error:", e));
+            elements.videoPlayer.play().catch(e => {
+                console.error("Direct Playback Error:", e);
+                // প্লে না হলে ওভারলে আবার দেখান
+                if (!userHasInteracted) {
+                    elements.playOverlay.classList.remove('hidden');
+                }
+            });
         }
     }
 
@@ -301,7 +376,7 @@
 
     function playAd(ad) {
         if (!state.isAdPlaying) {
-            elements.videoPlayer.pause();
+            // elements.videoPlayer.pause(); // pause করার প্রয়োজন নেই, loadSource এটি হ্যান্ডেল করবে
             if (hls) hls.destroy();
         }
         state.isAdPlaying = true;
@@ -338,6 +413,8 @@
       }
     }
 
+    // --- বাকি জাভাস্ক্রিপ্ট কোড অপরিবর্তিত ---
+    
     // --- Chat Logic ---
     function initChat() {
       renderProfileStatus();
