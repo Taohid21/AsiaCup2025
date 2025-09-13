@@ -39,8 +39,8 @@
     .control-btn svg { width: 28px; height: 28px; fill: currentColor; filter: drop-shadow(0 0 4px rgba(0,0,0,0.6)); transition: transform 0.2s ease; }
     .control-btn:hover { color: var(--accent); }
     .control-btn:hover svg { transform: scale(1.1); }
-    .floating-heart { position: absolute; bottom: 20px; font-size: 24px; opacity: 1; animation: floatUp 4s ease-out forwards; pointer-events: none; z-index: 25; }
-    @keyframes floatUp { to { transform: translateY(-300px); opacity: 0; } }
+    .floating-heart { position: absolute; bottom: 20px; font-size: 24px; opacity: 1; animation: floatUp 4s ease-out forwards; pointer-events: none; z-index: 25; user-select: none; }
+    @keyframes floatUp { to { transform: translateY(-350px) scale(1.2); opacity: 0; } }
     .server-selection { padding: 10px 16px; background-color: var(--bg-dark); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0; border-bottom: 1px solid var(--bg-medium); min-height: 48px; }
     .server-selection span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
     .server-btn { background-color: var(--bg-medium); color: var(--text-light); border: 1px solid transparent; border-radius: 15px; padding: 5px 12px; font-size: 13px; font-family: var(--font-family); cursor: pointer; transition: all 0.2s ease; }
@@ -101,41 +101,10 @@
     #lightbox .modal-content { background: none; border: none; width: auto; height: auto; max-width: 90vw; max-height: 90vh; padding: 0; }
     #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
     #lightboxClose { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; background: none; border: none; padding: 0; }
-
-    /* --- নতুন যোগ করা CSS --- */
-    #playOverlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      cursor: pointer;
-      z-index: 15; /* ভিডিও লোডারের নিচে কিন্তু ভিডিওর উপরে */
-      transition: opacity 0.3s ease;
-    }
-    #playOverlay.hidden {
-      opacity: 0;
-      pointer-events: none; /* হিডেন থাকা অবস্থায় যাতে ক্লিক না করা যায় */
-    }
-    #playOverlay .play-icon {
-      width: 70px;
-      height: 70px;
-      fill: #fff;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-    }
-    #playOverlay span {
-      font-size: 16px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      user-select: none;
-    }
+    #playOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 15; transition: opacity 0.3s ease; }
+    #playOverlay.hidden { opacity: 0; pointer-events: none; }
+    #playOverlay .play-icon { width: 70px; height: 70px; fill: #fff; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
+    #playOverlay span { font-size: 16px; font-weight: 500; letter-spacing: 0.5px; user-select: none; }
   </style>
 </head>
 <body>
@@ -143,24 +112,16 @@
   <div class="video-container">
     <div class="video-wrapper" id="videoWrapper">
       <div class="video-loader"></div>
-      <!-- 'muted' অ্যাট্রিবিউট যোগ করা হয়েছে -->
       <video id="videoPlayer" playsinline autoplay muted></video>
-
-      <!-- নতুন "Click to Play" ওভারলে -->
       <div id="playOverlay">
-        <svg class="play-icon" viewBox="0 0 24 24">
-          <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
-        </svg>
+        <svg class="play-icon" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
         <span>Click to Play</span>
       </div>
-
       <div class="ad-image-container" id="adImageContainer"></div>
       <div class="ad-indicator" id="adIndicator">Advertisement</div>
       <div class="video-overlay-controls">
         <div class="live-indicator" id="liveIndicator">LIVE</div>
-        <button class="control-btn" id="fullscreenBtn" title="Fullscreen">
-          <svg viewBox="0 0 24 24"><path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M7,17H10V19H5V14H7V17Z"/></svg>
-        </button>
+        <button class="control-btn" id="fullscreenBtn" title="Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M7,17H10V19H5V14H7V17Z"/></svg></button>
       </div>
     </div>
     <div class="server-selection" id="serverSelection"></div>
@@ -200,9 +161,9 @@
   <script>
     const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
     const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
-    const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW"; // এখানে আপনার Giphy API কী দিন
+    const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
     const PROFILE_KEY = 'livechat_profile_v7';
-    const IMAGE_AD_DURATION = 30000; // 10 seconds for image ads
+    const IMAGE_AD_DURATION = 4000; // বিজ্ঞাপন ৪ সেকেন্ড দেখানো হবে
     
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
@@ -221,13 +182,13 @@
       gifModal: getEl('gifModal'), gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'),
       lightbox: getEl('lightbox'), lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'),
       typingIndicator: getEl('typingIndicator'),
-      playOverlay: getEl('playOverlay') // নতুন প্লে ওভারলে এলিমেন্ট
+      playOverlay: getEl('playOverlay')
     };
     
     let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
     let selectedImageFile = null; let hls; let controlsTimeout; let typingTimeout; let imageAdTimeout;
     let state = { isAdPlaying: false, currentLiveUrl: null, currentAdData: null };
-    let userHasInteracted = false; // নতুন ভ্যারিয়েবল ব্যবহারকারীর ইন্টারঅ্যাকশন ট্র্যাক করার জন্য
+    let userHasInteracted = false;
 
     // --- Core Initializations ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -236,14 +197,12 @@
       setupPresence();
     });
     
-    // --- নতুন ফাংশন: প্রথম প্লে হ্যান্ডেল করার জন্য ---
     function handleFirstPlay() {
-      if (userHasInteracted) return; // শুধু একবারই রান হবে
+      if (userHasInteracted) return;
       userHasInteracted = true;
-      
-      elements.videoPlayer.muted = false; // ভিডিও আনমিউট করুন
+      elements.videoPlayer.muted = false;
       elements.videoPlayer.play().catch(e => console.warn("Play after interaction failed:", e));
-      elements.playOverlay.classList.add('hidden'); // ওভারলে লুকিয়ে ফেলুন
+      elements.playOverlay.classList.add('hidden');
     }
 
     // --- Video Player & Ads Logic ---
@@ -257,8 +216,6 @@
       elements.videoPlayer.addEventListener('waiting', () => elements.videoWrapper.classList.add('loading'));
       ['canplay', 'playing', 'error'].forEach(evt => elements.videoPlayer.addEventListener(evt, () => elements.videoWrapper.classList.remove('loading')));
       elements.videoPlayer.addEventListener('ended', handleVideoEnd);
-
-      // প্লে ওভারলেতে ক্লিক ইভেন্ট যোগ করুন
       elements.playOverlay.addEventListener('click', handleFirstPlay);
     }
     
@@ -321,7 +278,6 @@
         });
     }
 
-    // --- loadSource ফাংশনটি আপডেট করা হয়েছে ---
     function loadSource(url, isLiveStream = true) {
         if (isLiveStream) {
             state.currentLiveUrl = url;
@@ -330,8 +286,6 @@
         if (hls) {
             hls.destroy();
         }
-
-        // ব্যবহারকারী ক্লিক করে থাকলে তবেই ভিডিও আনমিউট হবে
         if (userHasInteracted) {
             elements.videoPlayer.muted = false;
         }
@@ -342,8 +296,6 @@
             hls.attachMedia(elements.videoPlayer);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 elements.videoPlayer.play().catch(e => {
-                    console.error("HLS Playback Error:", e);
-                    // প্লে না হলে ওভারলে আবার দেখান
                     if (!userHasInteracted) {
                         elements.playOverlay.classList.remove('hidden');
                     }
@@ -352,8 +304,6 @@
         } else {
             elements.videoPlayer.src = url;
             elements.videoPlayer.play().catch(e => {
-                console.error("Direct Playback Error:", e);
-                // প্লে না হলে ওভারলে আবার দেখান
                 if (!userHasInteracted) {
                     elements.playOverlay.classList.remove('hidden');
                 }
@@ -376,7 +326,6 @@
 
     function playAd(ad) {
         if (!state.isAdPlaying) {
-            // elements.videoPlayer.pause(); // pause করার প্রয়োজন নেই, loadSource এটি হ্যান্ডেল করবে
             if (hls) hls.destroy();
         }
         state.isAdPlaying = true;
@@ -402,31 +351,38 @@
     function restoreLiveStream() {
       state.isAdPlaying = false;
       clearTimeout(imageAdTimeout);
-      
       elements.adIndicator.style.display = 'none';
       elements.liveIndicator.style.display = 'flex';
       elements.adImageContainer.style.display = 'none';
       elements.videoPlayer.style.display = 'block';
-
       if (state.currentLiveUrl) {
         loadSource(state.currentLiveUrl, true);
       }
     }
-
-    // --- বাকি জাভাস্ক্রিপ্ট কোড অপরিবর্তিত ---
     
     // --- Chat Logic ---
     function initChat() {
       renderProfileStatus();
       elements.msgInput.addEventListener('focus', () => { if (!profile) elements.profileModal.style.display = 'flex'; });
+      
+      // *** উন্নত টাইপিং লজিক ***
       elements.msgInput.addEventListener('input', () => {
         updateSendButtonState();
+        if (!profile) return;
+        
         clearTimeout(typingTimeout);
-        if(profile && elements.msgInput.value.trim()) {
-          rdb.ref('/typing/' + profile.uid).set(profile.name);
-          typingTimeout = setTimeout(() => rdb.ref('/typing/' + profile.uid).remove(), 2000);
+        const typingRef = rdb.ref('/typing/' + profile.uid);
+        
+        if (elements.msgInput.value.trim()) {
+            typingRef.set(profile.name);
+            typingTimeout = setTimeout(() => {
+                typingRef.remove();
+            }, 2000); // ২ সেকেন্ড পর টাইপিং স্ট্যাটাস মুছে যাবে
+        } else {
+            typingRef.remove();
         }
       });
+      
       elements.sendBtn.addEventListener('click', sendMessage);
       elements.msgInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
       elements.imageUploadBtn.onclick = () => { if (!profile) elements.profileModal.style.display = 'flex'; else elements.imageInput.click(); };
@@ -437,8 +393,29 @@
         }
         updateSendButtonState();
       };
-      firestore.collection('chats').orderBy('createdAt', 'desc').limit(50).onSnapshot(handleNewMessages);
+
+      // *** হার্ট রিঅ্যাকশন যোগ করা হয়েছে ***
+      elements.heartBtn.addEventListener('click', sendHeartReaction);
+
+      firestore.collection('chats').orderBy('createdAt').limitToLast(50).onSnapshot(handleNewMessages);
     }
+    
+    // *** হার্ট রিঅ্যাকশন ফাংশন ***
+    function sendHeartReaction() {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerHTML = '❤️';
+        // র্যা ন্ডম পজিশন এবং অ্যানিমেশন ডিলে
+        heart.style.left = `${Math.random() * 40 + 30}%`;
+        heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
+        
+        elements.videoWrapper.appendChild(heart);
+        
+        setTimeout(() => {
+            heart.remove();
+        }, 4000); // অ্যানিমেশন শেষে DOM থেকে মুছে যাবে
+    }
+
 
     const updateSendButtonState = () => {
         const hasContent = elements.msgInput.value.trim() || selectedImageFile;
@@ -455,10 +432,14 @@
       if (!profile) return;
       const text = elements.msgInput.value.trim();
       if (!text && !selectedImageFile) return;
-      const [tempImage, tempText] = [selectedImageFile, text];
-      elements.msgInput.value = ''; cancelImageUpload();
+      
+      // মেসেজ পাঠানোর সাথে সাথে টাইপিং স্ট্যাটাস মুছে দিন
+      clearTimeout(typingTimeout);
       rdb.ref('/typing/' + profile.uid).remove();
 
+      const [tempImage, tempText] = [selectedImageFile, text];
+      elements.msgInput.value = ''; cancelImageUpload();
+      
       try {
         let imageUrl = null;
         if (tempImage) imageUrl = await uploadToImgbb(tempImage);
@@ -470,13 +451,14 @@
     }
     
     function handleNewMessages(snapshot) {
-      const isScrolledToBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 100;
-      elements.messagesBox.innerHTML = snapshot.docs.reverse().map(doc => {
+      elements.messagesBox.innerHTML = snapshot.docs.map(doc => {
         const data = doc.data();
         const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
         return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
       }).join('');
-      if(isScrolledToBottom) elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
+      
+      // *** সবসময় চ্যাট বক্স নিচে স্ক্রল করে রাখবে ***
+      elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
     }
     
     // --- GIF & Modals Logic ---
@@ -560,6 +542,7 @@
         localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
         elements.profileModal.style.display = 'none';
         renderProfileStatus();
+        setupPresence(); // প্রোফাইল তৈরির পর onDisconnect সেট করার জন্য আবার কল করা হলো
       } catch (e) {
         alert("Profile creation failed."); console.error(e);
       } finally {
@@ -572,11 +555,15 @@
       const uid = (profile?.uid) || (localStorage.getItem('livechat_presence_uid') || 'guest_' + Date.now());
       localStorage.setItem('livechat_presence_uid', uid);
       const userStatusRef = rdb.ref('/presence/' + uid);
+      
       rdb.ref('.info/connected').on('value', snap => {
         if (snap.val()) { 
           userStatusRef.onDisconnect().remove();
           userStatusRef.set(true); 
-          if(profile) rdb.ref('/typing/' + profile.uid).onDisconnect().remove();
+          // *** ডিসকানেক্ট হলে টাইপিং স্ট্যাটাস মুছে ফেলার নিয়ম ***
+          if(profile) {
+            rdb.ref('/typing/' + profile.uid).onDisconnect().remove();
+          }
         }
       });
       rdb.ref('presence').on('value', snap => { elements.viewerCountEl.textContent = `● ${snap.numChildren()} watching`; });
