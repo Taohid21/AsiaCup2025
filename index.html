@@ -17,26 +17,32 @@
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; margin: 0; background-color: var(--bg-darker); }
-    body { color: var(--text-light); font-family: var(--font-family); display: flex; flex-direction: column; }
+    body { 
+      color: var(--text-light); font-family: var(--font-family); 
+      display: flex; flex-direction: column;
+    }
     
     .video-container { flex-shrink: 0; background-color: #000; width: 100%; line-height: 0; position: relative; }
     .app-container { display: flex; flex-direction: column; flex-grow: 1; max-width: 800px; width: 100%; margin: 0 auto; background-color: var(--bg-darker); overflow: hidden; }
-    .video-wrapper { position: relative; background-color: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 9; max-height: 75vh; display: flex; align-items: center; justify-content: center; transition: background 0.3s ease; cursor: pointer; }
+    .video-wrapper { position: relative; background-color: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 9; max-height: 75vh; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s ease; }
+    /* মেনুর জন্য সুন্দর ব্যাকগ্রাউন্ড */
     .video-wrapper.menu-active { background: linear-gradient(135deg, #0f172a, #1e293b); }
     .video-wrapper video, .video-wrapper iframe { width: 100%; height: 100%; object-fit: contain; display: block; border: none; }
     .video-loader { position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; transform: translate(-50%, -50%); z-index: 10; display: none; }
     .video-wrapper.loading .video-loader { display: block; }
     @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
     
-    #menuContainer, #youtubeContainer { display: none; }
+    #menuContainer, #youtubeContainer { display: none; /* JS দিয়ে কন্ট্রোল হবে */ }
     #menuContainer.active, #youtubeContainer.active { display: flex; }
 
+    /* মেনু স্টাইল */
     #menuContainer { gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; padding: 20px; width: 100%; height: 100%; }
-    .menu-btn { background-color: var(--bg-dark); border: 1px solid var(--bg-medium); border-radius: 12px; color: var(--text-light); cursor: pointer; padding: 20px; text-align: center; transition: all 0.2s ease; width: 140px; z-index: 5; }
+    .menu-btn { background-color: var(--bg-dark); border: 1px solid var(--bg-medium); border-radius: 12px; color: var(--text-light); cursor: pointer; padding: 20px; text-align: center; transition: all 0.2s ease; width: 140px; }
     .menu-btn:hover { background-color: var(--bg-medium); transform: translateY(-5px); }
     .menu-btn svg { width: 48px; height: 48px; fill: var(--accent); margin-bottom: 12px; }
     .menu-btn span { font-size: 16px; font-weight: 500; display: block; }
     
+    /* ইউটিউব সার্চ স্টাইল */
     #youtubeContainer { width: 100%; height: 100%; background-color: var(--bg-darker); flex-direction: column; padding: 16px; }
     #youtubeSearchBox { display: flex; gap: 10px; margin-bottom: 16px; }
     #youtubeSearchBox input { flex-grow: 1; background-color: var(--bg-dark); border: 1px solid var(--bg-medium); color: var(--text-light); padding: 10px 15px; border-radius: 8px; }
@@ -46,29 +52,28 @@
     .youtube-item:hover { background-color: var(--bg-dark); }
     .youtube-item img { width: 120px; height: 67px; object-fit: cover; border-radius: 6px; }
     .youtube-item .title { font-size: 14px; font-weight: 500; }
-    
+
     #backToMenuBtn { position: absolute; top: 15px; left: 15px; background-color: rgba(0,0,0,0.6); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 50; display: none; align-items: center; justify-content: center; }
     
-    .online-users-container { padding: 10px 16px; background-color: var(--bg-dark); display: flex; gap: 16px; align-items: center; overflow-x: auto; flex-shrink: 0; border-bottom: 1px solid var(--bg-medium); min-height: 60px; }
-    .online-users-container::-webkit-scrollbar { height: 4px; }
-    .online-users-container::-webkit-scrollbar-thumb { background: var(--bg-medium); border-radius: 2px; }
-    .online-user { position: relative; cursor: pointer; flex-shrink: 0; }
-    .online-user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); transition: all 0.2s ease-in-out; }
-    .online-user-avatar.speaking { transform: scale(1.15); box-shadow: 0 0 12px 4px var(--success); border-color: var(--success); }
-    .level-badge { position: absolute; bottom: -2px; right: -4px; background-color: var(--accent); color: var(--bg-darker); font-size: 10px; font-weight: 600; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-dark); }
-    .mute-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
-    .mute-overlay.visible { opacity: 1; }
-    .mute-overlay svg { width: 20px; height: 20px; fill: #fff; }
-
+    /* অনলাইন ব্যবহারকারীদের তালিকা - উন্নত স্টাইল */
+    .online-users-container { padding: 12px 16px; background-color: var(--bg-dark); display: flex; gap: 14px; align-items: center; overflow-x: auto; flex-shrink: 0; border-bottom: 1px solid var(--bg-medium); min-height: 68px; }
+    .online-users-container::-webkit-scrollbar { height: 5px; }
+    .online-users-container::-webkit-scrollbar-track { background: transparent; }
+    .online-users-container::-webkit-scrollbar-thumb { background: var(--bg-medium); border-radius: 10px; }
+    .online-user-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); flex-shrink: 0; transition: all 0.2s ease-in-out; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .online-user-avatar:hover { transform: scale(1.1); border-color: #fff; }
+    .online-user-avatar.speaking { transform: scale(1.15); box-shadow: 0 0 15px 4px var(--success); border-color: var(--success); }
     #audioStreamsContainer { display: none; }
     
+    /* চ্যাট এবং অন্যান্য স্টাইল */
     .chat-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
     .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background-color: var(--bg-dark); border-bottom: 1px solid var(--bg-medium); flex-shrink: 0; }
     .chat-header h1 { font-size: 16px; margin: 0; font-weight: 600; }
     .viewer-count { font-size: 14px; color: var(--text-muted); }
     .messages-box { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
     .scroll-to-bottom-btn { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); background-color: var(--accent); color: var(--bg-darker); border: none; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: opacity 0.3s, transform 0.3s; opacity: 0; visibility: hidden; }
-    .scroll-to-bottom-btn.visible { opacity: 1; visibility: visible; }
+    .scroll-to-bottom-btn.visible { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    
     .message { display: flex; gap: 12px; align-items: flex-start; max-width: 90%; animation: slideInUp 0.4s ease-out; }
     .message.gift-message, .message.notification-message { max-width: 100%; }
     @keyframes slideInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -76,13 +81,12 @@
     .message .content { background-color: var(--bg-dark); padding: 8px 12px; border-radius: 12px; border-top-left-radius: 0; max-width: 100%; }
     .message .metadata { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
     .message .metadata .name { font-weight: 600; font-size: 13px; color: var(--accent); }
-    .level-badge-chat { background-color: var(--accent); color: var(--bg-darker); font-size: 9px; font-weight: 600; border-radius: 4px; padding: 1px 4px; }
     .message .metadata .time { font-size: 11px; color: var(--text-muted); }
     .message .content .text { font-size: 15px; color: var(--text-light); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
     .message .content .chat-image { max-width: 100%; border-radius: 8px; margin-top: 8px; display: block; cursor: pointer; }
-    .gift-message .content { background-color: var(--gift-bg); color: #fff; width: 100%; text-align: center; border-radius: 8px; padding: 10px; }
+    .gift-message .content { background-color: var(--gift-bg); color: #fff; width: 100%; text-align: center; border-radius: 8px; }
     .gift-message .text { font-weight: 500; }
-    .notification-message .content { background-color: var(--bg-medium); color: var(--text-light); width: 100%; text-align: center; border-radius: 8px; font-size: 13px; font-style: italic; padding: 10px;}
+    .notification-message .content { background-color: var(--bg-medium); color: var(--text-light); width: 100%; text-align: center; border-radius: 8px; font-size: 13px; font-style: italic; }
     .typing-indicator { position: absolute; bottom: 75px; left: 16px; font-size: 13px; color: var(--text-muted); font-style: italic; background: var(--bg-dark); padding: 4px 10px; border-radius: 10px; z-index: 10; opacity: 0; transition: opacity 0.3s; }
     .typing-indicator.visible { opacity: 1; }
     .input-wrapper { flex-shrink: 0; background-color: var(--bg-dark); }
@@ -103,10 +107,12 @@
     #sendBtn svg { fill: var(--accent); }
     #sendBtn { transform: scale(0); transition: transform 0.2s ease; position: absolute; right: 0; }
     #sendBtn.visible { transform: scale(1); }
-    #heartBtn { display: none; }
+    #heartBtn.hidden { transform: scale(0); }
     .input-field { flex-grow: 1; min-width: 0; }
     .right-icons { position: relative; display: flex; align-items: center; }
     input[type="text"] { width: 100%; border: 1px solid var(--bg-medium); background-color: var(--bg-darker); border-radius: 20px; padding: 10px 16px; color: var(--text-light); font-size: 15px; font-family: var(--font-family); }
+    input[type="text"]:focus { outline: none; border-color: var(--accent); }
+    /* Modal Styles */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .modal-content { background-color: var(--bg-dark); padding: 24px; border-radius: 16px; width: 90%; max-width: 380px; text-align: center; border: 1px solid var(--bg-medium); transform: scale(0.95); animation: scaleIn 0.3s ease forwards; }
@@ -114,11 +120,20 @@
     .modal-content h2 { margin-top: 0; font-size: 20px; font-weight: 600; }
     .modal-content p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
     #avatarPreview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 16px; display: none; border: 2px solid var(--bg-medium); }
+    .avatar-upload-label { display: block; padding: 12px; border-radius: 8px; border: 2px dashed var(--bg-medium); cursor: pointer; margin-bottom: 12px; color: var(--text-muted); }
+    .avatar-upload-label:hover { border-color: var(--accent); color: var(--accent); }
+    .modal-content input { width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--bg-medium); background: var(--bg-darker); color: #fff; font-family: var(--font-family); }
     .modal-content button { width: 100%; cursor: pointer; border: 0; padding: 12px; border-radius: 8px; background: var(--accent); color: var(--bg-darker); font-weight: 600; font-size: 16px; }
+    .modal-content button:disabled { background-color: var(--bg-medium); cursor: not-allowed; }
     #gifModal .modal-content { max-width: 500px; padding: 0; overflow: hidden; }
     #gifSearchInput { width: calc(100% - 32px); margin: 16px; }
     #gifResults { height: 40vh; overflow-y: auto; padding: 0 16px 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
     #gifResults img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }
+    #gifResults img:hover { transform: scale(1.05); }
+    #lightbox { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+    #lightbox .modal-content { background: none; border: none; width: auto; height: auto; max-width: 90vw; max-height: 90vh; padding: 0; }
+    #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    #lightboxClose { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; background: none; border: none; padding: 0; }
   </style>
 </head>
 <body>
@@ -128,8 +143,8 @@
     <div class="video-wrapper" id="videoWrapper">
       <div class="video-loader"></div>
       <div id="menuContainer">
-        <button class="menu-btn" id="playVideoBtn"><svg viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg><span>Play Video</span></button>
-        <button class="menu-btn" id="playYoutubeBtn"><svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.25,4,12,4,12,4S5.75,4,4.186,4.418 C3.326,4.648,2.648,5.326,2.418,6.186C2,7.75,2,12,2,12s0,4.25,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.75,20,12,20,12,20s6.25,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.25,22,12,22,12S22,7.75,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg><span>YouTube</span></button>
+        <button class="menu-btn" id="playVideoBtn"><svg viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg><span>Play Video</span></button>
+        <button class="menu-btn" id="playYoutubeBtn"><svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.25,4,12,4,12,4S5.75,4,4.186,4.418 C3.326,4.648,2.648,5.326,2.418,6.186C2,7.75,2,12,2,12s0,4.25,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.75,20,12,20,12,20s6.25,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.25,22,12,22,12S22,7.75,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z" /></svg><span>YouTube</span></button>
       </div>
       <div id="youtubeContainer">
         <div id="youtubeSearchBox">
@@ -138,9 +153,8 @@
         </div>
         <div id="youtubeResults"></div>
       </div>
-      <div id="ytPlayerContainer" style="width:100%; height:100%; display:none;"></div>
       <video id="videoPlayer" playsinline controls style="display:none;"></video>
-      <button id="backToMenuBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/></svg></button>
+      <button id="backToMenuBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg></button>
     </div>
   </div>
 
@@ -155,12 +169,12 @@
         <div id="imagePreviewBox"></div>
         <div class="input-area">
           <button class="icon-btn" id="imageUploadBtn" title="Upload Image"><svg viewBox="0 0 24 24"><path d="M21.58,16.09L17.24,11.75C16.67,11.18 15.77,11.18 15.2,11.75L14.47,12.47L11.82,9.82C11.25,9.25 10.35,9.25 9.78,9.82L4.42,15.18C4.16,15.44 4,15.81 4,16.2V19C4,20.1 4.9,21 6,21H18C19.1,21 20,20.1 20,19V17.59C20,17.18 20.16,16.77 20.42,16.53L21.58,15.37C22.15,14.8 22.15,13.9 21.58,13.33M6,19L10.5,14.5L13.5,17.5L16.5,14.5L18,16V19H6M16,10C17.1,10 18,9.1 18,8C18,6.9 17.1,6 16,6C14.9,6 14,6.9 14,8C14,9.1 14.9,10 16,10M20,2H4C2.9,2 2,2.9 2,4V13.8C2,14.21 2.16,14.62 2.42,14.88L3.58,16.04C3,16.5 3,17.22 3,17.59V19C3,20.65 4.35,22 6,22H18C19.65,22 21,20.65 21,19V17.59C21.54,17.22 21.73,16.63 21.58,16.09L22.75,14.93C23.32,14.36 23.32,13.46 22.75,12.89L19,9L14.75,13.25L11.25,9.75L7,14L4,11V4H20V2Z"/></svg></button>
-          <button class="icon-btn" id="gifBtn" title="Send GIF"><svg viewBox="0 0 24 24"><path d="M9,9V15H11V11H13V9M15,9A2,2 0 0,1 17,11V15H15V11H13V12A1,1 0 0,0 14,13A1,1 0 0,0 15,12A2,2 0 0,1 17,10A2,2 0 0,1 19,12V15H21V11A4,4 0 0,0 17,7A4,4 0 0,0 13,11V15H15V13H17V15H19V17H13A2,2 0 0,1 11,15V13H9V15A2,2 0 0,0 11,17H13V19H11A4,4 0 0,1 7,15V9H9M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3Z"/></svg></button>
+          <button class="icon-btn" id="gifBtn" title="Send GIF"><svg viewBox="0 0 24 24"><path d="M9,9V15H11V11H13V9M15,9A2,2 0 0,1 17,11V15H15V11H13V12A1,1 0 0,0 14,13A1,1 0 0,0 15,12A2,2 0 0,1 17,10A2,2 0 0,1 19,12V15H21V11A4,4 0 0,0 17,7A4,4 0 0,0 13,11V15H15V13H17V15H19V17H13A2,2 0 0,1 11,15V13H9V15A2,2 0 0,0 11,17H13V19H11A4,4 0 0,1 7,15V9H9M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3Z" /></svg></button>
           <div class="input-field"><input type="text" id="msgInput" placeholder="Write a message..."></div>
           <input type="file" id="imageInput" accept="image/*" style="display:none;">
           <div class="right-icons">
-            <button class="icon-btn" id="heartBtn" title="React"></button>
-            <button class="icon-btn" id="sendBtn" title="Send"><svg viewBox="0 0 24 24"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/></svg></button>
+            <button class="icon-btn" id="heartBtn" title="React"><svg viewBox="0 0 24 24"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" /></svg></button>
+            <button class="icon-btn" id="sendBtn" title="Send"><svg viewBox="0 0 24 24"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" /></svg></button>
           </div>
         </div>
       </div>
@@ -169,12 +183,12 @@
 
   <div id="audioStreamsContainer"></div>
 
-  <div class="modal-overlay" id="profileModal"><div class="modal-content"><img id="avatarPreview" src="#" alt="Avatar Preview"/><h2>Join the Hub</h2><p>Create a profile to chat, talk, and interact.</p><input id="nameInput" type="text" placeholder="Your Name" /><label for="avatarFile" class="avatar-upload-label" style="display: block; padding: 12px; border-radius: 8px; border: 2px dashed var(--bg-medium); cursor: pointer; margin-bottom: 12px; color: var(--text-muted);">Upload a Photo</label><input id="avatarFile" type="file" accept="image/*" style="display:none"/><button id="createProfileBtn">Create Profile</button><div id="uploading" style="display:none;color:var(--text-muted);font-size:12px;margin-top:8px;">Uploading...</div></div></div>
+  <!-- Modals -->
+  <div class="modal-overlay" id="profileModal"><div class="modal-content"><img id="avatarPreview" src="#" alt="Avatar Preview"/><h2>Join the Chat</h2><p>Create a profile to chat and talk.</p><input id="nameInput" type="text" placeholder="Your Name" /><label for="avatarFile" class="avatar-upload-label">Upload a Photo</label><input id="avatarFile" type="file" accept="image/*" style="display:none"/><button id="createProfileBtn">Create Profile</button><div id="uploading" style="display:none;color:var(--text-muted);font-size:12px;margin-top:8px;">Uploading...</div></div></div>
   <div class="modal-overlay" id="gifModal"><div class="modal-content"><input type="text" id="gifSearchInput" placeholder="Search for GIFs..."><div id="gifResults"></div></div></div>
-  <div class="modal-overlay" id="lightbox"><div class="modal-content" style="background:none; border:none; width:auto; height:auto; max-width:90vw; max-height:90vh; padding:0;"><img id="lightboxImage" src="" style="max-width:100%; max-height:100%; object-fit:contain;"><button id="lightboxClose" style="position:absolute; top:20px; right:20px; color:#fff; font-size:30px; cursor:pointer; background:none; border:none; padding:0;">&times;</button></div></div>
+  <div class="modal-overlay" id="lightbox"><div class="modal-content"><img id="lightboxImage" src=""><button id="lightboxClose">&times;</button></div></div>
   <div class="modal-overlay" id="withdrawModal"><div class="modal-content"><h2>Withdraw Balance</h2><p>You can withdraw 20 BDT via Grameenphone mobile recharge. Enter your GP number (017... or 013...).</p><input id="withdrawNumberInput" type="tel" placeholder="e.g., 01700000000" /><button id="submitWithdrawBtn">Submit Request (20 BDT)</button></div></div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
@@ -182,175 +196,167 @@
 
 <script>
   // --- Configuration ---
-  const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9" };
+  const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
   const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
   const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
   const YOUTUBE_API_KEY = "AIzaSyCFrCuHFk0LNylLnilq5zl-arWoSdil7OE";
-  const PROFILE_KEY = 'livechat_profile_v11';
+  const PROFILE_KEY = 'livechat_profile_v10';
   const MIN_WITHDRAW_AMOUNT = 20;
   const RTC_CONFIGURATION = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
   
   firebase.initializeApp(firebaseConfig);
   const firestore = firebase.firestore();
   const rdb = firebase.database();
-  const liveMediaRef = rdb.ref('/live_media_v3'); 
-  const usersRef = rdb.ref('users');
-  const presenceRef = rdb.ref('presence');
-  const typingRef = rdb.ref('typing');
+  const liveMediaRef = rdb.ref('/live_media_v2'); 
 
   const getEl = id => document.getElementById(id);
-  const elements = { videoWrapper: getEl('videoWrapper'), videoPlayer: getEl('videoPlayer'), ytPlayerContainer: getEl('ytPlayerContainer'), messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'), sendBtn: getEl('sendBtn'), heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'), profileModal: getEl('profileModal'), imageUploadBtn: getEl('imageUploadBtn'), gifBtn: getEl('gifBtn'), imageInput: getEl('imageInput'), imagePreviewBox: getEl('imagePreviewBox'), avatarFile: getEl('avatarFile'), profileStatusBox: getEl('profileStatusBox'), createProfileBtn: getEl('createProfileBtn'), uploadingText: getEl('uploading'), gifModal: getEl('gifModal'), gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'), lightbox: getEl('lightbox'), lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'), typingIndicator: getEl('typingIndicator'), avatarPreview: getEl('avatarPreview'), withdrawModal: getEl('withdrawModal'), withdrawNumberInput: getEl('withdrawNumberInput'), submitWithdrawBtn: getEl('submitWithdrawBtn'), onlineUsersContainer: getEl('onlineUsersContainer'), menuContainer: getEl('menuContainer'), backToMenuBtn: getEl('backToMenuBtn'), youtubeContainer: getEl('youtubeContainer'), youtubeQuery: getEl('youtubeQuery'), youtubeSearchBtn: getEl('youtubeSearchBtn'), youtubeResults: getEl('youtubeResults'), audioStreamsContainer: getEl('audioStreamsContainer'), scrollToBottomBtn: getEl('scrollToBottomBtn') };
+  const elements = { videoWrapper: getEl('videoWrapper'), videoPlayer: getEl('videoPlayer'), messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'), sendBtn: getEl('sendBtn'), heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'), profileModal: getEl('profileModal'), imageUploadBtn: getEl('imageUploadBtn'), gifBtn: getEl('gifBtn'), imageInput: getEl('imageInput'), imagePreviewBox: getEl('imagePreviewBox'), avatarFile: getEl('avatarFile'), profileStatusBox: getEl('profileStatusBox'), createProfileBtn: getEl('createProfileBtn'), uploadingText: getEl('uploading'), gifModal: getEl('gifModal'), gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'), lightbox: getEl('lightbox'), lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'), typingIndicator: getEl('typingIndicator'), avatarPreview: getEl('avatarPreview'), withdrawModal: getEl('withdrawModal'), withdrawNumberInput: getEl('withdrawNumberInput'), submitWithdrawBtn: getEl('submitWithdrawBtn'), onlineUsersContainer: getEl('onlineUsersContainer'), menuContainer: getEl('menuContainer'), backToMenuBtn: getEl('backToMenuBtn'), youtubeContainer: getEl('youtubeContainer'), youtubeQuery: getEl('youtubeQuery'), youtubeSearchBtn: getEl('youtubeSearchBtn'), youtubeResults: getEl('youtubeResults'), audioStreamsContainer: getEl('audioStreamsContainer'), scrollToBottomBtn: getEl('scrollToBottomBtn') };
   
-  let profile = null;
-  try { profile = JSON.parse(localStorage.getItem(PROFILE_KEY)); } catch (e) { localStorage.removeItem(PROFILE_KEY); }
+  let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+  let userBalance = 0; let balanceListener = null; let selectedImageFile = null; let hls; let typingTimeout;
   
-  let userBalance = 0, balanceListener = null, selectedImageFile = null, hls, typingTimeout;
-  let localStream, peerConnections = {}, remoteStreams = {}, audioContext, streamAnalyzers = {}, mutedUsers = new Set();
-  let ytPlayer, isYTReady = false, isProgrammaticChange = false;
-
+  // MODIFIED: State variables for voice chat and media sync
+  let localStream; let peerConnections = {}; let audioContext; let streamAnalyzers = {};
+  let isMediaHost = false; 
+  let isSeeking = false;
+  
   document.addEventListener('DOMContentLoaded', () => {
-    initApp(); initChat(); initModals(); initTiBot();
-    setupPresence(); listenForOnlineUsersAndData(); listenForMediaChanges(); 
-    if (profile) { initVoiceChat(); listenForRtcSignals(); } else { elements.profileModal.style.display = 'flex'; }
+    initApp();
+    initChat();
+    listenForTyping(); // ADDED: This call was missing, now it's active.
+    initModals();
+    initTiBot();
+    setupPresence();
+    listenForOnlineUsers();
+    listenForMediaChanges(); 
+    setupVideoEventListeners(); // ADDED: For media sync functionality.
+    if (profile) { initVoiceChat(); listenForRtcSignals(); }
   });
-
-  window.onYouTubeIframeAPIReady = () => { isYTReady = true; liveMediaRef.get().then(snap => updateMediaDisplay(snap.val())); };
 
   function initApp() {
     elements.backToMenuBtn.onclick = () => setLiveMedia(null);
     getEl('playVideoBtn').onclick = playVideoFromPrompt;
-    getEl('playYoutubeBtn').onclick = () => setLiveMedia({ screen: 'youtube_search' });
+    getEl('playYoutubeBtn').onclick = () => setLiveMedia({ type: 'youtube_search' });
     elements.youtubeSearchBtn.onclick = searchYoutube;
-    elements.videoWrapper.onclick = e => { if (e.target.closest('#menuContainer, #youtubeContainer, #backToMenuBtn, .ytp-chrome-bottom, video')) return; sendHeartReaction(); };
+    elements.youtubeQuery.addEventListener('keydown', e => { if (e.key === 'Enter') searchYoutube(); });
   }
   
+  // --- Live Media Sync (REVISED SECTION) ---
   function setLiveMedia(state) {
-    if (!profile) return alert("Please create a profile to control the media.");
-    const finalState = state ? { ...state, ts: firebase.database.ServerValue.TIMESTAMP } : null;
-    liveMediaRef.set(finalState);
+    if (profile) {
+      // ADDED: playbackState for sync. When media is set, its state is initialized.
+      const mediaData = state ? { ...state, initiatedBy: profile.uid, playbackState: { isPlaying: true, currentTime: 0, timestamp: firebase.database.ServerValue.TIMESTAMP } } : null;
+      liveMediaRef.set(mediaData);
+    } else {
+        alert("Please create a profile to control the media.");
+    }
   }
 
-  function listenForMediaChanges() { liveMediaRef.on('value', snapshot => updateMediaDisplay(snapshot.val())); }
+  function listenForMediaChanges() {
+    liveMediaRef.on('value', snapshot => {
+      const mediaState = snapshot.val();
+      updateMediaDisplay(mediaState);
+
+      // ADDED: Listener for playback state changes
+      const playbackStateRef = liveMediaRef.child('playbackState');
+      playbackStateRef.off(); // Remove previous listener to avoid duplicates
+      if (mediaState) {
+          playbackStateRef.on('value', playbackSnap => {
+              const state = playbackSnap.val();
+              // Only non-hosts should sync their player to avoid loops
+              if (state && !isMediaHost) {
+                  syncMediaPlayer(state);
+              }
+          });
+      }
+    });
+  }
 
   function updateMediaDisplay(mediaState) {
-    isProgrammaticChange = true;
-    if(ytPlayer && typeof ytPlayer.destroy === 'function') { ytPlayer.destroy(); ytPlayer = null; }
-    elements.ytPlayerContainer.style.display = 'none';
+    const existingIframe = elements.videoWrapper.querySelector('iframe');
+    if (existingIframe) existingIframe.remove();
+    if (hls) { hls.destroy(); hls = null; }
+
+    // ADDED: Determine if the current user is the host of the media
+    isMediaHost = mediaState && profile && mediaState.initiatedBy === profile.uid;
+    console.log("Are you the media host?", isMediaHost);
+
+    elements.videoPlayer.src = '';
     elements.videoPlayer.style.display = 'none';
-    elements.videoPlayer.onplay = elements.videoPlayer.onpause = elements.videoPlayer.onseeked = null;
     elements.menuContainer.classList.remove('active');
     elements.youtubeContainer.classList.remove('active');
     elements.videoWrapper.classList.remove('menu-active');
-    
-    if (!mediaState) {
+
+    if (!mediaState) { 
         elements.videoWrapper.classList.add('menu-active');
         elements.menuContainer.classList.add('active');
         elements.backToMenuBtn.style.display = 'none';
     } else {
         elements.backToMenuBtn.style.display = 'flex';
-        switch (mediaState.screen) {
+        switch (mediaState.type) {
             case 'youtube_search': elements.youtubeContainer.classList.add('active'); break;
-            case 'video': handleVideoPlayback(mediaState); break;
-            case 'youtube': handleYouTubePlayback(mediaState); break;
+            case 'youtube': playYoutubeVideo(mediaState.source); break;
+            case 'direct': loadSource(mediaState.source); break;
         }
     }
-    setTimeout(() => isProgrammaticChange = false, 600);
   }
 
-  function handleVideoPlayback(state) {
-    elements.videoPlayer.style.display = 'block';
-    if (elements.videoPlayer.src !== state.source) { elements.videoPlayer.src = state.source; }
-    const timeDiff = (Date.now() - (state.ts || Date.now())) / 1000;
-    const targetTime = (state.position || 0) + (state.state === 'playing' ? timeDiff : 0);
-    if (Math.abs(elements.videoPlayer.currentTime - targetTime) > 1.5) { elements.videoPlayer.currentTime = targetTime; }
-    state.state === 'playing' ? elements.videoPlayer.play().catch(console.warn) : elements.videoPlayer.pause();
+  // ADDED: New functions for media sync
+  function syncMediaPlayer(state) {
+    if (!elements.videoPlayer.src && !elements.videoWrapper.querySelector('iframe')) return;
+    
+    if (state.isPlaying && elements.videoPlayer.paused) {
+      elements.videoPlayer.play().catch(console.warn);
+    } else if (!state.isPlaying && !elements.videoPlayer.paused) {
+      elements.videoPlayer.pause();
+    }
 
-    elements.videoPlayer.onplay = () => !isProgrammaticChange && liveMediaRef.update({ state: 'playing', position: elements.videoPlayer.currentTime, ts: firebase.database.ServerValue.TIMESTAMP });
-    elements.videoPlayer.onpause = () => !isProgrammaticChange && liveMediaRef.update({ state: 'paused', position: elements.videoPlayer.currentTime, ts: firebase.database.ServerValue.TIMESTAMP });
-    elements.videoPlayer.onseeked = () => !isProgrammaticChange && liveMediaRef.update({ position: elements.videoPlayer.currentTime, ts: firebase.database.ServerValue.TIMESTAMP });
+    const timeDifference = Math.abs(elements.videoPlayer.currentTime - state.currentTime);
+    if (timeDifference > 2 && !isSeeking) {
+      console.log(`Syncing time from ${elements.videoPlayer.currentTime} to ${state.currentTime}`);
+      elements.videoPlayer.currentTime = state.currentTime;
+    }
   }
-  
-  function handleYouTubePlayback(state) {
-    if (!isYTReady) return;
-    elements.ytPlayerContainer.style.display = 'block';
-    ytPlayer = new YT.Player('ytPlayerContainer', {
-        height: '100%', width: '100%', videoId: state.source, playerVars: { autoplay: 1, controls: 1, rel: 0 },
-        events: { 'onReady': e => syncYTPlayer(e.target, state), 'onStateChange': e => onYTPlayerStateChange(e) }
+
+  function sendPlaybackState() {
+    if (!isMediaHost || isSeeking) return; // Only host sends updates
+    liveMediaRef.child('playbackState').set({
+      isPlaying: !elements.videoPlayer.paused,
+      currentTime: elements.videoPlayer.currentTime,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
     });
   }
-  
-  function syncYTPlayer(player, state) {
-    const timeDiff = (Date.now() - (state.ts || Date.now())) / 1000;
-    const targetTime = (state.position || 0) + (state.state === 'playing' ? timeDiff : 0);
-    player.seekTo(targetTime, true);
-    state.state === 'playing' ? player.playVideo() : player.pauseVideo();
-  }
-  
-  function onYTPlayerStateChange(event) {
-    if (isProgrammaticChange) return;
-    let newState = null;
-    if (event.data === YT.PlayerState.PLAYING) newState = 'playing';
-    if (event.data === YT.PlayerState.PAUSED) newState = 'paused';
-    if (newState) liveMediaRef.update({ state: newState, position: event.target.getCurrentTime(), ts: firebase.database.ServerValue.TIMESTAMP });
-  }
 
-  function playVideoFromPrompt() { const url = prompt("Enter video URL (.m3u8, .mp4):"); if (url) setLiveMedia({ screen: 'video', source: url, state: 'playing', position: 0 }); }
-  
-  async function searchYoutube() {
-      const query = elements.youtubeQuery.value.trim();
-      if (!query) return;
-      elements.youtubeResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>';
-      try {
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video&maxResults=20`);
-        const data = await response.json();
-        if (data.items) {
-          elements.youtubeResults.innerHTML = data.items.map(item => `
-            <div class="youtube-item" data-video-id="${item.id.videoId}">
-              <img src="${item.snippet.thumbnails.default.url}" alt="${escapeHtml(item.snippet.title)}">
-              <span class="title">${escapeHtml(item.snippet.title)}</span>
-            </div>
-          `).join('');
-          elements.youtubeResults.querySelectorAll('.youtube-item').forEach(item => {
-            item.onclick = () => setLiveMedia({ screen: 'youtube', source: item.dataset.videoId, state: 'playing', position: 0 });
-          });
-        }
-      } catch (e) { console.error("YouTube search failed", e); elements.youtubeResults.innerHTML = '<span>Search failed.</span>'; }
-  }
-
-  function listenForOnlineUsersAndData() {
-    let onlineUsers = {}; let usersData = {};
-    const render = () => {
-        elements.onlineUsersContainer.innerHTML = '';
-        if (Object.keys(onlineUsers).length === 0) { elements.onlineUsersContainer.innerHTML = '<span>No one is online.</span>'; return; }
-        Object.values(onlineUsers).forEach(user => {
-            if (user.avatar && user.uid) {
-                const userData = usersData[user.uid] || { points: 0 };
-                const level = calculateLevel(userData.points);
-                const isMuted = mutedUsers.has(user.uid);
-                const userEl = document.createElement('div');
-                userEl.className = 'online-user';
-                userEl.title = `${user.name} (Level ${level}) - Click to Mute/Unmute`;
-                userEl.innerHTML = `<img src="${user.avatar}" class="online-user-avatar" data-uid="${user.uid}"><div class="level-badge">${level}</div><div class="mute-overlay ${isMuted ? 'visible' : ''}"><svg viewBox="0 0 24 24"><path d="M12,4A4,4 0 0,0 8,8V12A4,4 0 0,0 12,16A4,4 0 0,0 16,12V8A4,4 0 0,0 12,4M19,12C19,15.86 15.86,19 12,19C8.14,19 5,15.86 5,12H3C3,16.54 6.71,20.13 11,20.84V24H13V20.84C17.29,20.13 21,16.54 21,12H19Z"/></svg></div>`;
-                userEl.onclick = () => toggleMuteUser(user.uid);
-                elements.onlineUsersContainer.appendChild(userEl);
-            }
-        });
-        if(profile && localStream) manageRtcConnections(Object.values(onlineUsers));
+  function setupVideoEventListeners() {
+    elements.videoPlayer.onplay = sendPlaybackState;
+    elements.videoPlayer.onpause = sendPlaybackState;
+    elements.videoPlayer.onseeking = () => { isSeeking = true; };
+    elements.videoPlayer.onseeked = () => {
+      isSeeking = false;
+      sendPlaybackState();
     };
-    presenceRef.on('value', snap => { onlineUsers = snap.val() || {}; render(); });
-    usersRef.on('value', snap => { usersData = snap.val() || {}; render(); });
   }
 
-  function calculateLevel(points) { return !points ? 1 : Math.floor(Math.sqrt(points / 100)) + 1; }
-
-  function toggleMuteUser(uid) {
-    if (uid === profile.uid) return;
-    if (mutedUsers.has(uid)) { mutedUsers.delete(uid); } else { mutedUsers.add(uid); }
-    const audioTrack = remoteStreams[uid]?.getAudioTracks()[0];
-    if (audioTrack) { audioTrack.enabled = !mutedUsers.has(uid); }
-    document.querySelector(`.online-user-avatar[data-uid="${uid}"]`)?.nextElementSibling?.nextElementSibling.classList.toggle('visible', mutedUsers.has(uid));
+  function playVideoFromPrompt() {
+      const url = prompt("Please enter the video URL (.m3u8, .mp4, etc.):");
+      if (url) setLiveMedia({ type: 'direct', source: url });
   }
-  
+
+  async function searchYoutube() {
+      const query = elements.youtubeQuery.value.trim(); if (!query) return;
+      elements.youtubeResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>';
+      try { const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video&maxResults=20`); const data = await response.json(); if (data.items) { elements.youtubeResults.innerHTML = data.items.map(item => `<div class="youtube-item" data-video-id="${item.id.videoId}"><img src="${item.snippet.thumbnails.default.url}" alt="${escapeHtml(item.snippet.title)}"><span class="title">${escapeHtml(item.snippet.title)}</span></div>`).join(''); elements.youtubeResults.querySelectorAll('.youtube-item').forEach(item => { item.onclick = () => setLiveMedia({ type: 'youtube', source: item.dataset.videoId }); }); } } catch (e) { console.error("YouTube search failed", e); elements.youtubeResults.innerHTML = '<span>Search failed.</span>'; }
+  }
+
+  function playYoutubeVideo(videoId) { switchToIframe(`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`); }
+  function loadSource(url) {
+      elements.videoWrapper.classList.add('loading'); elements.videoPlayer.style.display = 'block';
+      if (url.includes('.m3u8') && Hls.isSupported()) { hls = new Hls(); hls.loadSource(url); hls.attachMedia(elements.videoPlayer); hls.on(Hls.Events.MANIFEST_PARSED, () => elements.videoPlayer.play().catch(console.warn)); } else { elements.videoPlayer.src = url; elements.videoPlayer.play().catch(console.warn); }
+      ['canplay', 'playing', 'error'].forEach(evt => elements.videoPlayer.addEventListener(evt, () => elements.videoWrapper.classList.remove('loading')));
+  }
+  function switchToIframe(url) { const iframe = document.createElement('iframe'); iframe.src = url; iframe.allow = "autoplay; encrypted-media"; elements.videoWrapper.appendChild(iframe); elements.videoWrapper.classList.remove('loading'); }
+
+  // --- Chat, Presence & Voice Logic ---
   function initChat() {
     renderProfileStatus();
     elements.msgInput.addEventListener('focus', () => { if (!profile) elements.profileModal.style.display = 'flex'; });
@@ -359,72 +365,112 @@
     elements.msgInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
     elements.imageUploadBtn.onclick = () => (profile ? elements.imageInput.click() : elements.profileModal.style.display = 'flex');
     elements.imageInput.onchange = e => { selectedImageFile = e.target.files[0]; if (selectedImageFile) { elements.imagePreviewBox.innerHTML = `<div class="image-preview"><img src="${URL.createObjectURL(selectedImageFile)}"><span class="filename">${escapeHtml(selectedImageFile.name)}</span><button onclick="cancelImageUpload()">&times;</button></div>`; } updateSendButtonState(); };
+    elements.heartBtn.onclick = sendHeartReaction;
     firestore.collection('chats').orderBy('createdAt').limitToLast(50).onSnapshot(handleNewMessages);
     elements.scrollToBottomBtn.onclick = () => { elements.messagesBox.scrollTo({ top: elements.messagesBox.scrollHeight, behavior: 'smooth' }); elements.scrollToBottomBtn.classList.remove('visible'); };
     elements.messagesBox.onscroll = () => { if (elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 10) { elements.scrollToBottomBtn.classList.remove('visible'); } };
   }
   
-  function handleNewMessages(snapshot) {
-    const wasScrolledToBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 10;
-    snapshot.docChanges().forEach(change => {
-        if (change.type === 'added') {
-            const data = change.doc.data();
-            const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-            const level = calculateLevel(data.points);
-            let messageHtml = '';
-            switch (data.type || 'message') {
-                case 'gift': messageHtml = `<div class="message gift-message"><div class="text">🎁 <strong>${escapeHtml(data.botName)}</strong> gifted <strong>${data.amount} BDT</strong> to <strong>${escapeHtml(data.recipientName)}</strong>!</div></div>`; break;
-                case 'withdrawal_notification': messageHtml = `<div class="message notification-message"><div class="content"><strong>${escapeHtml(data.name)}</strong> submitted a withdrawal request for <strong>${data.amount} BDT</strong>.</div></div>`; break;
-                default: messageHtml = `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="level-badge-chat">Lvl ${level}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
-            }
-            elements.messagesBox.insertAdjacentHTML('beforeend', messageHtml);
+  function handleTyping() { clearTimeout(typingTimeout); const typingRef = rdb.ref('/typing/' + profile.uid); if (elements.msgInput.value.trim()) { typingRef.set(profile.name); typingTimeout = setTimeout(() => typingRef.remove(), 2000); } else { typingRef.remove(); } }
+  
+  function handleNewMessages(snapshot) { const wasScrolledToBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 10; snapshot.docChanges().forEach(change => { if (change.type === 'added') { const data = change.doc.data(); const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''; let messageHtml = ''; switch(data.type || 'message') { case 'gift': messageHtml = `<div class="message gift-message"><div class="content"><div class="text">🎁 <strong>${escapeHtml(data.botName)}</strong> gifted <strong>${data.amount} BDT</strong> to <strong>${escapeHtml(data.recipientName)}</strong>!</div></div></div>`; break; case 'withdrawal_notification': messageHtml = `<div class="message notification-message"><div class="content"><strong>${escapeHtml(data.name)}</strong> submitted a withdrawal request for <strong>${data.amount} BDT</strong>.</div></div>`; break; default: messageHtml = `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`; } elements.messagesBox.insertAdjacentHTML('beforeend', messageHtml); } }); if(wasScrolledToBottom) { requestAnimationFrame(() => { elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight; }); } else if (snapshot.docChanges().length > 0) { elements.scrollToBottomBtn.classList.add('visible'); } }
+  
+  async function sendMessage() { if (!profile) return; const text = elements.msgInput.value.trim(); if (!text && !selectedImageFile) return; rdb.ref('/typing/' + profile.uid).remove(); const [tempImage, tempText] = [selectedImageFile, text]; elements.msgInput.value = ''; cancelImageUpload(); try { let imageUrl = null; if (tempImage) imageUrl = await uploadToImgbb(tempImage); const messageData = { ...profile, type: 'message', createdAt: firebase.firestore.FieldValue.serverTimestamp() }; if (tempText) messageData.text = tempText; if (imageUrl) messageData.imageUrl = imageUrl; await firestore.collection('chats').add(messageData); updateUserPoints(profile.uid, 5); } catch (e) { console.error("Send failed:", e); } }
+  
+  function sendHeartReaction() { if (!profile) { elements.profileModal.style.display = 'flex'; return; } updateUserPoints(profile.uid, 2); const heart = document.createElement('div'); heart.innerHTML = '❤️'; heart.style.cssText = `position: absolute; bottom: 20px; z-index: 55; left: ${Math.random() * 40 + 30}%; animation: floatUp ${Math.random() * 2 + 3}s ease-out forwards; font-size: 24px; pointer-events: none;`; elements.videoWrapper.appendChild(heart); setTimeout(() => heart.remove(), 4000); if(!document.getElementById('floatUpAnimation')) { const style = document.createElement('style'); style.id = 'floatUpAnimation'; style.innerHTML = `@keyframes floatUp { to { transform: translateY(-40vh) scale(1.2); opacity: 0; } }`; document.head.appendChild(style); } }
+  
+  const updateSendButtonState = () => { const hasContent = elements.msgInput.value.trim() || selectedImageFile; elements.sendBtn.classList.toggle('visible', hasContent); elements.heartBtn.classList.toggle('hidden', hasContent); };
+  
+  window.cancelImageUpload = () => { selectedImageFile = null; elements.imageInput.value = ''; elements.imagePreviewBox.innerHTML = ''; updateSendButtonState(); };
+  
+  function setupPresence() { const uid = (profile?.uid) || (localStorage.getItem('livechat_presence_uid') || 'guest_' + Date.now()); localStorage.setItem('livechat_presence_uid', uid); const userStatusRef = rdb.ref('/presence/' + uid); rdb.ref('.info/connected').on('value', snap => { if (snap.val()) { userStatusRef.onDisconnect().remove(); const presenceData = { name: profile?.name || 'Guest', uid: profile?.uid, avatar: profile?.avatar }; userStatusRef.set(presenceData); if(profile) { rdb.ref('/typing/' + profile.uid).onDisconnect().remove(); rdb.ref('/webrtc_signals/' + profile.uid).onDisconnect().remove(); } } }); rdb.ref('presence').on('value', snap => { elements.viewerCountEl.textContent = `● ${snap.numChildren()} watching`; }); }
+  
+  function listenForOnlineUsers() { rdb.ref('presence').on('value', snapshot => { const users = snapshot.val() || {}; elements.onlineUsersContainer.innerHTML = ''; if (Object.keys(users).length === 0) { elements.onlineUsersContainer.innerHTML = '<span>No one is online.</span>'; return; } Object.values(users).forEach(user => { if (user.avatar && user.uid) { const img = document.createElement('img'); img.src = user.avatar; img.title = user.name; img.className = 'online-user-avatar'; img.dataset.uid = user.uid; elements.onlineUsersContainer.appendChild(img); } }); if(profile && localStream) manageRtcConnections(Object.values(users)); }); }
+
+  // --- Voice Chat & WebRTC Functions (REVISED & IMPROVED SECTION) ---
+  async function initVoiceChat() {
+    if (!profile || localStream) return;
+    console.log("Initializing Voice Chat...");
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const presenceSnap = await rdb.ref('presence').get();
+        if (presenceSnap.exists()) {
+            manageRtcConnections(Object.values(presenceSnap.val()));
         }
-    });
-    if (wasScrolledToBottom) {
-        requestAnimationFrame(() => { elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight; });
-    } else if (snapshot.docChanges().length > 0) {
-        elements.scrollToBottomBtn.classList.add('visible');
+        monitorSpeaking();
+        console.log("Voice chat initialized successfully with local stream.");
+    } catch (e) {
+        console.error("Microphone access denied or error:", e);
+        alert("Could not access microphone. Voice chat will be disabled.");
     }
   }
 
-  function handleTyping() { clearTimeout(typingTimeout); const ref = typingRef.child(profile.uid); if (elements.msgInput.value.trim()) { ref.set(profile.name); typingTimeout = setTimeout(() => ref.remove(), 2000); } else { ref.remove(); } }
-  
-  async function sendMessage() { if (!profile) return; const text = elements.msgInput.value.trim(); if (!text && !selectedImageFile) return; typingRef.child(profile.uid).remove(); const [tempImage, tempText] = [selectedImageFile, text]; elements.msgInput.value = ''; cancelImageUpload(); try { let imageUrl = null; if (tempImage) imageUrl = await uploadToImgbb(tempImage); const userData = (await usersRef.child(profile.uid).get()).val(); const messageData = { ...profile, type: 'message', points: userData?.points || 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() }; if (tempText) messageData.text = tempText; if (imageUrl) messageData.imageUrl = imageUrl; await firestore.collection('chats').add(messageData); updateUserPoints(profile.uid, 5); } catch (e) { console.error("Send failed:", e); } }
-  
-  function sendHeartReaction() { if (!profile) { elements.profileModal.style.display = 'flex'; return; } updateUserPoints(profile.uid, 2); const heart = document.createElement('div'); heart.innerHTML = '❤️'; heart.style.cssText = `position: absolute; bottom: 20px; z-index: 55; left: ${Math.random() * 80 + 10}%; animation: floatUp ${Math.random() * 2 + 3}s ease-out forwards; font-size: 24px; pointer-events: none;`; elements.videoWrapper.appendChild(heart); setTimeout(() => heart.remove(), 4000); if(!document.getElementById('floatUpAnimation')) { const style = document.createElement('style'); style.id = 'floatUpAnimation'; style.innerHTML = `@keyframes floatUp { to { transform: translateY(-40vh) scale(1.2); opacity: 0; } }`; document.head.appendChild(style); } }
-  
-  const updateSendButtonState = () => { const hasContent = elements.msgInput.value.trim() || selectedImageFile; elements.sendBtn.classList.toggle('visible', hasContent); };
-  window.cancelImageUpload = () => { selectedImageFile = null; elements.imageInput.value = ''; elements.imagePreviewBox.innerHTML = ''; updateSendButtonState(); };
-  
-  function setupPresence() { if (!profile) return; const presenceId = localStorage.getItem('livechat_presence_id') || 'p_' + Date.now(); localStorage.setItem('livechat_presence_id', presenceId); const userStatusRef = presenceRef.child(presenceId); rdb.ref('.info/connected').on('value', snap => { if (snap.val()) { userStatusRef.onDisconnect().remove(); const presenceData = { name: profile.name, uid: profile.uid, avatar: profile.avatar }; userStatusRef.set(presenceData); typingRef.child(profile.uid).onDisconnect().remove(); rdb.ref('/webrtc_signals/' + profile.uid).onDisconnect().remove(); } }); }
-  
-  async function initVoiceChat() { try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); audioContext = new (window.AudioContext || window.webkitAudioContext)(); monitorSpeaking(); } catch (e) { console.error("Mic access denied:", e); } }
-  
-  function manageRtcConnections(onlineUsers) { if (!localStream || !profile) return; const onlineUserUids = onlineUsers.map(u => u.uid).filter(uid => uid && uid !== profile.uid); onlineUserUids.forEach(uid => { if (!peerConnections[uid]) createPeerConnection(uid, true); }); Object.keys(peerConnections).forEach(uid => { if (!onlineUserUids.includes(uid)) { peerConnections[uid].close(); delete peerConnections[uid]; delete remoteStreams[uid]; delete streamAnalyzers[uid]; const audioEl = getEl('audio_' + uid); if (audioEl) audioEl.remove(); } }); }
-  
-  async function createPeerConnection(remoteUid, isInitiator) { const pc = new RTCPeerConnection(RTC_CONFIGURATION); peerConnections[remoteUid] = pc; localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); pc.onicecandidate = e => { if (e.candidate) rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ ice: e.candidate }); }; pc.ontrack = e => { remoteStreams[remoteUid] = e.streams[0]; const audioTrack = e.streams[0].getAudioTracks()[0]; if (audioTrack) audioTrack.enabled = !mutedUsers.has(remoteUid); let audioEl = getEl('audio_' + remoteUid); if (!audioEl) { audioEl = document.createElement('audio'); audioEl.id = 'audio_' + remoteUid; audioEl.autoplay = true; elements.audioStreamsContainer.appendChild(audioEl); } audioEl.srcObject = e.streams[0]; if (audioContext && e.streams[0].getAudioTracks().length > 0) { const source = audioContext.createMediaStreamSource(e.streams[0]); const analyzer = audioContext.createAnalyser(); analyzer.fftSize = 256; source.connect(analyzer); streamAnalyzers[remoteUid] = { analyzer, dataArray: new Uint8Array(analyzer.frequencyBinCount) }; } }; if (isInitiator) { pc.onnegotiationneeded = async () => { try { const offer = await pc.createOffer(); await pc.setLocalDescription(offer); rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ sdp: pc.localDescription }); } catch (err) { console.error("Offer failed", err); } }; } }
-  
-  function listenForRtcSignals() { const signalsRef = rdb.ref(`/webrtc_signals/${profile.uid}`); signalsRef.on('child_added', snap => { const senderUid = snap.key; snap.ref.on('child_added', msgSnap => { handleSignalMessage(senderUid, msgSnap.val()); msgSnap.ref.remove(); }); }); }
-  
-  async function handleSignalMessage(senderUid, message) { if (!peerConnections[senderUid]) createPeerConnection(senderUid, false); const pc = peerConnections[senderUid]; try { if (message.sdp) { await pc.setRemoteDescription(new RTCSessionDescription(message.sdp)); if (message.sdp.type === 'offer') { const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); rdb.ref(`/webrtc_signals/${senderUid}/${profile.uid}`).push({ sdp: pc.localDescription }); } } else if (message.ice) { await pc.addIceCandidate(new RTCIceCandidate(message.ice)); } } catch (e) { console.error("Signal error for " + senderUid, e); } }
-  
+  function manageRtcConnections(onlineUsers) {
+    if (!profile || !localStream) return;
+    const onlineUserUids = onlineUsers.map(u => u.uid).filter(uid => uid && uid !== profile.uid);
+
+    onlineUserUids.forEach(uid => { if (!peerConnections[uid]) { console.log(`New user detected: ${uid}. Creating peer connection.`); createPeerConnection(uid, true); } });
+    Object.keys(peerConnections).forEach(uid => { if (!onlineUserUids.includes(uid)) { console.log(`User ${uid} left. Closing peer connection.`); peerConnections[uid].close(); delete peerConnections[uid]; const audioEl = getEl('audio_' + uid); if (audioEl) audioEl.remove(); if(streamAnalyzers[uid]) delete streamAnalyzers[uid]; } });
+  }
+
+  async function createPeerConnection(remoteUid, isInitiator) {
+    console.log(`Creating PeerConnection to ${remoteUid}. Initiator: ${isInitiator}`);
+    const pc = new RTCPeerConnection(RTC_CONFIGURATION);
+    peerConnections[remoteUid] = pc;
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+    pc.onicecandidate = event => { if (event.candidate) { rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ ice: event.candidate }); }};
+    
+    pc.ontrack = event => {
+        console.log(`Received remote track from ${remoteUid}`);
+        let audioEl = getEl('audio_' + remoteUid);
+        if (!audioEl) { audioEl = document.createElement('audio'); audioEl.id = 'audio_' + remoteUid; audioEl.autoplay = true; audioEl.playsInline = true; elements.audioStreamsContainer.appendChild(audioEl); console.log(`Created audio element for ${remoteUid}`); }
+        audioEl.srcObject = event.streams[0];
+        if (audioContext) { try { const source = audioContext.createMediaStreamSource(event.streams[0]); const analyzer = audioContext.createAnalyser(); analyzer.fftSize = 256; source.connect(analyzer); streamAnalyzers[remoteUid] = { analyzer, dataArray: new Uint8Array(analyzer.frequencyBinCount) }; console.log(`Audio analyzer created for ${remoteUid}`); } catch (e) { console.error("Error creating audio analyzer:", e); } }
+    };
+
+    pc.onconnectionstatechange = () => { console.log(`Connection state with ${remoteUid}: ${pc.connectionState}`); };
+    if (isInitiator) { try { const offer = await pc.createOffer(); await pc.setLocalDescription(offer); rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ sdp: pc.localDescription }); console.log(`Offer sent to ${remoteUid}`); } catch (e) { console.error("Failed to create or send offer:", e); } }
+  }
+
+  function listenForRtcSignals() {
+    if (!profile) return;
+    const signalsRef = rdb.ref(`/webrtc_signals/${profile.uid}`);
+    signalsRef.on('child_added', snapshot => { const senderUid = snapshot.key; if (senderUid === profile.uid) return; snapshot.ref.on('child_added', msgSnap => { handleSignalMessage(senderUid, msgSnap.val()); msgSnap.ref.remove(); }); });
+  }
+
+  async function handleSignalMessage(senderUid, message) {
+    if (!peerConnections[senderUid]) { console.log(`Received signal from new peer ${senderUid}. Creating peer connection.`); createPeerConnection(senderUid, false); }
+    const pc = peerConnections[senderUid];
+    try {
+        if (message.sdp) {
+            console.log(`Received SDP from ${senderUid}`, message.sdp);
+            await pc.setRemoteDescription(new RTCSessionDescription(message.sdp));
+            if (message.sdp.type === 'offer') { const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); rdb.ref(`/webrtc_signals/${senderUid}/${profile.uid}`).push({ sdp: pc.localDescription }); console.log(`Answer sent to ${senderUid}`); }
+        } else if (message.ice) { console.log(`Received ICE candidate from ${senderUid}`); await pc.addIceCandidate(new RTCIceCandidate(message.ice)); }
+    } catch (e) { console.error("Error handling signal message:", e); }
+  }
+
   function monitorSpeaking() { const speakingThreshold = 135; function checkLevels() { Object.keys(streamAnalyzers).forEach(uid => { const { analyzer, dataArray } = streamAnalyzers[uid]; analyzer.getByteFrequencyData(dataArray); let sum = dataArray.reduce((a, b) => a + b, 0); const average = sum / dataArray.length; const avatar = document.querySelector(`.online-user-avatar[data-uid="${uid}"]`); if (avatar) { avatar.classList.toggle('speaking', average > speakingThreshold); } }); requestAnimationFrame(checkLevels); } checkLevels(); }
   
+  // --- Modals, Profile, and Utility Functions (largely unchanged) ---
   function initModals() { elements.gifBtn.onclick = () => (profile ? openGifModal() : elements.profileModal.style.display = 'flex'); elements.gifModal.onclick = (e) => { if (e.target === elements.gifModal) elements.gifModal.style.display = 'none'; }; elements.gifSearchInput.addEventListener('input', debounce(() => searchGifs(elements.gifSearchInput.value), 300)); elements.lightbox.onclick = (e) => { if (e.target !== elements.lightboxImage) elements.lightbox.style.display = 'none'; }; elements.avatarFile.onchange = () => { const file = elements.avatarFile.files[0]; if (file) { const reader = new FileReader(); reader.onload = e => { elements.avatarPreview.src = e.target.result; elements.avatarPreview.style.display = 'block'; }; reader.readAsDataURL(file); } }; elements.withdrawModal.onclick = (e) => { if (e.target === elements.withdrawModal) elements.withdrawModal.style.display = 'none'; }; elements.submitWithdrawBtn.onclick = submitWithdrawal; }
   async function openGifModal() { if (GIPHY_API_KEY.includes("YOUR_")) return alert("Giphy API Key not configured."); elements.gifModal.style.display = 'flex'; elements.gifResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>'; try { const response = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=30`); const json = await response.json(); renderGifs(json.data); } catch(e) { console.error(e); } }
   async function searchGifs(query) { try { const endpoint = query ? `search?q=${encodeURIComponent(query)}&` : 'trending?'; const response = await fetch(`https://api.giphy.com/v1/gifs/${endpoint}api_key=${GIPHY_API_KEY}&limit=30`); const json = await response.json(); renderGifs(json.data); } catch(e) { console.error(e); } }
-  function renderGifs(gifs) { elements.gifResults.innerHTML = gifs.map(gif => `<img src="${gif.images.fixed_width.url}" alt="${gif.title}" data-full-url="${gif.images.original.url}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; cursor: pointer;">`).join(''); elements.gifResults.querySelectorAll('img').forEach(img => { img.onclick = () => { sendGif(img.dataset.fullUrl); elements.gifModal.style.display = 'none'; }; }); }
+  function renderGifs(gifs) { elements.gifResults.innerHTML = gifs.map(gif => `<img src="${gif.images.fixed_width.url}" alt="${gif.title}" data-full-url="${gif.images.original.url}">`).join(''); elements.gifResults.querySelectorAll('img').forEach(img => { img.onclick = () => { sendGif(img.dataset.fullUrl); elements.gifModal.style.display = 'none'; }; }); }
   async function sendGif(gifUrl) { if (!profile) return; await firestore.collection('chats').add({ ...profile, type: 'message', imageUrl: gifUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); updateUserPoints(profile.uid, 5); }
   window.openLightbox = (url) => { elements.lightboxImage.src = url; elements.lightbox.style.display = 'flex'; };
   function renderProfileStatus() { if (profile && profile.uid) { elements.profileStatusBox.innerHTML = `<div class="profile-status"><img src="${profile.avatar}"><span class="name">As <strong>${escapeHtml(profile.name)}</strong></span><div class="wallet-info"><span class="balance" id="userBalanceDisplay">৳ 0.00</span><button class="withdraw-btn locked" id="withdrawBtn" title="Withdraw (Min ${MIN_WITHDRAW_AMOUNT} BDT)"><svg viewBox="0 0 24 24"><path d="M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z"/></svg>Withdraw</button></div><button class="signout-btn" onclick="signOut()" title="Sign Out">&times;</button></div>`; getEl('withdrawBtn').onclick = openWithdrawModal; listenForBalanceChanges(profile.uid); } else { elements.profileStatusBox.innerHTML = ''; if (balanceListener) { balanceListener.off(); balanceListener = null; } } }
-  window.signOut = () => { if (confirm('Are you sure you want to sign out?')) { if(profile?.uid) { presenceRef.child(localStorage.getItem('livechat_presence_id')).remove(); } if(balanceListener) balanceListener.off(); localStream?.getTracks().forEach(track => track.stop()); Object.values(peerConnections).forEach(pc => pc.close()); profile = null; localStorage.removeItem(PROFILE_KEY); window.location.reload(); } };
-  elements.createProfileBtn.onclick = async () => { const name = getEl('nameInput').value.trim(); const file = elements.avatarFile.files[0]; if (!name || !file) return alert('Please provide both name and photo.'); elements.createProfileBtn.disabled = true; elements.uploadingText.style.display = 'block'; try { const avatarUrl = await uploadToImgbb(file); const uid = 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9); profile = { uid, name, avatar: avatarUrl }; localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); await usersRef.child(uid).set({ balance: 0, points: 0 }); elements.profileModal.style.display = 'none'; window.location.reload(); } catch (e) { alert("Profile creation failed."); console.error(e); } finally { elements.createProfileBtn.disabled = false; elements.uploadingText.style.display = 'none'; } };
-  typingRef.on('value', snap => { const typers = snap.val() || {}; const activeTypers = Object.keys(typers).filter(uid => uid !== profile?.uid).map(uid => escapeHtml(typers[uid])); if(activeTypers.length > 0) { let text = activeTypers.slice(0, 2).join(', ') + (activeTypers.length > 2 ? ' and others' : ''); text += (activeTypers.length > 1 ? ' are' : ' is') + ' typing...'; elements.typingIndicator.textContent = text; elements.typingIndicator.classList.add('visible'); } else { elements.typingIndicator.classList.remove('visible'); } });
-  function listenForBalanceChanges(uid) { if (balanceListener) balanceListener.off(); const userBalanceRef = usersRef.child(uid).child('balance'); balanceListener = userBalanceRef.on('value', snapshot => { userBalance = snapshot.val() || 0; const balanceDisplay = getEl('userBalanceDisplay'); const withdrawBtn = getEl('withdrawBtn'); if (balanceDisplay) balanceDisplay.textContent = `৳ ${userBalance.toFixed(2)}`; if (withdrawBtn) { const isLocked = userBalance < MIN_WITHDRAW_AMOUNT; withdrawBtn.classList.toggle('locked', isLocked); withdrawBtn.disabled = isLocked; withdrawBtn.querySelector('svg path').setAttribute('d', isLocked ? 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z' : 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6H8.9V8H15.1V6A3.1,3.1 0 0,0 12,2.9A3.1,3.1 0 0,0 8.9,6H7V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17Z'); } }); }
+  window.signOut = () => { if (confirm('Are you sure you want to sign out?')) { if(profile?.uid) { rdb.ref('/presence/' + localStorage.getItem('livechat_presence_uid')).remove(); } if(balanceListener) balanceListener.off(); localStream?.getTracks().forEach(track => track.stop()); Object.values(peerConnections).forEach(pc => pc.close()); profile = null; localStorage.removeItem(PROFILE_KEY); window.location.reload(); } };
+  elements.createProfileBtn.onclick = async () => { const name = getEl('nameInput').value.trim(); const file = elements.avatarFile.files[0]; if (!name || !file) return alert('Please provide both name and photo.'); elements.createProfileBtn.disabled = true; elements.uploadingText.style.display = 'block'; try { const avatarUrl = await uploadToImgbb(file); const uid = 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9); profile = { uid, name, avatar: avatarUrl }; localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); await rdb.ref('users/' + uid).set({ balance: 0, points: 0 }); elements.profileModal.style.display = 'none'; window.location.reload(); } catch (e) { alert("Profile creation failed."); console.error(e); } finally { elements.createProfileBtn.disabled = false; elements.uploadingText.style.display = 'none'; } };
+  function listenForTyping() { rdb.ref('/typing').on('value', snap => { const typers = snap.val() || {}; const activeTypers = Object.keys(typers).filter(uid => uid !== profile?.uid).map(uid => escapeHtml(typers[uid])); if(activeTypers.length > 0) { let text = activeTypers.slice(0, 2).join(', ') + (activeTypers.length > 2 ? ' and others' : ''); text += (activeTypers.length > 1 ? ' are' : ' is') + ' typing...'; elements.typingIndicator.textContent = text; elements.typingIndicator.classList.add('visible'); } else { elements.typingIndicator.classList.remove('visible'); } }); }
+  function listenForBalanceChanges(uid) { if (balanceListener) balanceListener.off(); const userBalanceRef = rdb.ref('users/' + uid + '/balance'); balanceListener = userBalanceRef.on('value', snapshot => { userBalance = snapshot.val() || 0; const balanceDisplay = getEl('userBalanceDisplay'); const withdrawBtn = getEl('withdrawBtn'); if (balanceDisplay) balanceDisplay.textContent = `৳ ${userBalance.toFixed(2)}`; if (withdrawBtn) { const isLocked = userBalance < MIN_WITHDRAW_AMOUNT; withdrawBtn.classList.toggle('locked', isLocked); withdrawBtn.disabled = isLocked; withdrawBtn.querySelector('svg path').setAttribute('d', isLocked ? 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z' : 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6H8.9V8H15.1V6A3.1,3.1 0 0,0 12,2.9A3.1,3.1 0 0,0 8.9,6H7V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17Z'); } }); }
   function openWithdrawModal() { if(userBalance < MIN_WITHDRAW_AMOUNT) { alert(`You need at least ${MIN_WITHDRAW_AMOUNT} BDT to withdraw.`); return; } elements.withdrawModal.style.display = 'flex'; }
-  async function submitWithdrawal() { const number = elements.withdrawNumberInput.value.trim(); const gpRegex = /^(017|013)\d{8}$/; if (!gpRegex.test(number)) { alert('Please enter a valid Grameenphone number.'); return; } this.disabled = true; try { await usersRef.child(profile.uid).child('balance').set(firebase.database.ServerValue.increment(-MIN_WITHDRAW_AMOUNT)); await rdb.ref('withdrawal_requests').push({ uid: profile.uid, name: profile.name, number: number, amount: MIN_WITHDRAW_AMOUNT, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP }); await firestore.collection('chats').add({ type: 'withdrawal_notification', name: profile.name, amount: MIN_WITHDRAW_AMOUNT, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert('Withdrawal request submitted!'); elements.withdrawModal.style.display = 'none'; elements.withdrawNumberInput.value = ''; } catch (error) { alert('An error occurred.'); console.error('Withdrawal Error:', error); } finally { this.disabled = false; } }
-  async function updateUserPoints(uid, pointsToAdd) { if (!uid) return; try { await usersRef.child(uid).child('points').set(firebase.database.ServerValue.increment(pointsToAdd)); } catch(e) { console.error('Failed to update points', e); } }
-  function initTiBot() { setInterval(async () => { try { const presenceSnap = await presenceRef.get(); const onlineUsers = presenceSnap.val() || {}; const userUIDs = Object.values(onlineUsers).map(u => u.uid).filter(u => u && u.startsWith('u_')); if (userUIDs.length === 0) return; const usersSnap = await usersRef.get(); const usersData = usersSnap.val() || {}; const activeUsers = userUIDs.map(uid => ({ uid, points: usersData[uid]?.points || 0, name: Object.values(onlineUsers).find(u => u.uid === uid)?.name || 'A User' })).filter(u => u.points > 50); if (activeUsers.length > 0) { const highestUser = activeUsers.reduce((max, user) => user.points > max.points ? user : max); const giftAmount = 1; await usersRef.child(highestUser.uid).update({ balance: firebase.database.ServerValue.increment(giftAmount), points: 0 }); await firestore.collection('chats').add({ type: 'gift', botName: 'Ti Bot', recipientName: highestUser.name, amount: giftAmount, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); } } catch (error) { console.error("Ti Bot Error:", error); } }, 120000); }
+  async function submitWithdrawal() { const number = elements.withdrawNumberInput.value.trim(); const gpRegex = /^(017|013)\d{8}$/; if (!gpRegex.test(number)) { alert('Please enter a valid Grameenphone number (e.g., 017... or 013...).'); return; } this.disabled = true; try { await rdb.ref('users/' + profile.uid + '/balance').set(firebase.database.ServerValue.increment(-MIN_WITHDRAW_AMOUNT)); await rdb.ref('withdrawal_requests').push({ uid: profile.uid, name: profile.name, number: number, amount: MIN_WITHDRAW_AMOUNT, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP }); await firestore.collection('chats').add({ type: 'withdrawal_notification', name: profile.name, amount: MIN_WITHDRAW_AMOUNT, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert('Withdrawal request submitted!'); elements.withdrawModal.style.display = 'none'; elements.withdrawNumberInput.value = ''; } catch (error) { alert('An error occurred.'); console.error('Withdrawal Error:', error); } finally { this.disabled = false; } }
+  async function updateUserPoints(uid, pointsToAdd) { if (!uid) return; try { await rdb.ref('users/' + uid + '/points').set(firebase.database.ServerValue.increment(pointsToAdd)); } catch(e) { console.error('Failed to update points', e); } }
+  function initTiBot() { setInterval(async () => { try { const presenceSnap = await rdb.ref('presence').get(); const onlineUsers = presenceSnap.val() || {}; const userUIDs = Object.values(onlineUsers).filter(u => u.uid && u.uid.startsWith('u_')).map(u => u.uid); if (userUIDs.length === 0) return; const usersSnap = await rdb.ref('users').get(); const usersData = usersSnap.val() || {}; const activeUsers = userUIDs.map(uid => ({ uid, points: usersData[uid]?.points || 0, name: Object.values(onlineUsers).find(u => u.uid === uid)?.name || 'A User' })).filter(u => u.points > 10); if (activeUsers.length > 0) { const highestUser = activeUsers.reduce((max, user) => user.points > max.points ? user : max); const giftAmount = 1; await rdb.ref('users/' + highestUser.uid).update({ balance: firebase.database.ServerValue.increment(giftAmount), points: 0 }); await firestore.collection('chats').add({ type: 'gift', botName: 'Ti Bot', recipientName: highestUser.name, amount: giftAmount, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); } } catch (error) { console.error("Ti Bot Error:", error); } }, 120000); }
   async function uploadToImgbb(file) { const formData = new FormData(); formData.append('image', file); const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData }); const data = await res.json(); if (!data.success) throw new Error(data.error.message); return data.data.url; }
   const escapeHtml = str => str?.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]) || '';
   const debounce = (func, delay) => { let timeout; return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func(...args), delay); }; };
