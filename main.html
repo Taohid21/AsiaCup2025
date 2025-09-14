@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LIVE Stream</title>
+  <title>LIVE Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,29 +24,43 @@
     
     .video-container { flex-shrink: 0; background-color: #000; width: 100%; line-height: 0; position: relative; }
     .app-container { display: flex; flex-direction: column; flex-grow: 1; max-width: 800px; width: 100%; margin: 0 auto; background-color: var(--bg-darker); overflow: hidden; }
-    .video-wrapper { position: relative; background-color: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 9; max-height: 75vh; }
+    .video-wrapper { position: relative; background-color: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 9; max-height: 75vh; display: flex; align-items: center; justify-content: center; }
     .video-wrapper video { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .video-wrapper .ad-image-container { width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; display: none; }
     .video-loader { position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; transform: translate(-50%, -50%); z-index: 10; display: none; }
     .video-wrapper.loading .video-loader { display: block; }
     @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-    .video-overlay-controls { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 20; }
-    .video-wrapper:hover .video-overlay-controls, .video-wrapper.controls-visible .video-overlay-controls { opacity: 1; visibility: visible; }
-    .live-indicator { display: flex; align-items: center; gap: 8px; background-color: rgba(0, 0, 0, 0.5); color: #fff; font-size: 14px; font-weight: 600; padding: 5px 12px; border-radius: 5px; user-select: none; }
-    .live-indicator::before { content: ''; display: block; width: 9px; height: 9px; background-color: var(--live-red); border-radius: 50%; animation: pulse 1.5s infinite; }
-    .ad-indicator { background-color: #ffc107; color: #000; font-weight: 600; font-size: 12px; padding: 3px 8px; border-radius: 4px; position: absolute; top: 10px; left: 10px; z-index: 21; display: none; }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } }
-    .control-btn { background: none; border: none; padding: 0; cursor: pointer; color: #fff; }
-    .control-btn svg { width: 28px; height: 28px; fill: currentColor; filter: drop-shadow(0 0 4px rgba(0,0,0,0.6)); transition: transform 0.2s ease; }
-    .control-btn:hover { color: var(--accent); }
-    .control-btn:hover svg { transform: scale(1.1); }
-    .floating-heart { position: absolute; bottom: 20px; font-size: 24px; opacity: 1; animation: floatUp 4s ease-out forwards; pointer-events: none; z-index: 25; user-select: none; }
-    @keyframes floatUp { to { transform: translateY(-350px) scale(1.2); opacity: 0; } }
-    .server-selection { padding: 10px 16px; background-color: var(--bg-dark); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0; border-bottom: 1px solid var(--bg-medium); min-height: 48px; }
-    .server-selection span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
-    .server-btn { background-color: var(--bg-medium); color: var(--text-light); border: 1px solid transparent; border-radius: 15px; padding: 5px 12px; font-size: 13px; font-family: var(--font-family); cursor: pointer; transition: all 0.2s ease; }
-    .server-btn:hover { background-color: #475569; }
-    .server-btn.active { background-color: var(--accent); color: var(--bg-darker); font-weight: 600; border-color: var(--accent); }
+    
+    /* নতুন মেনু স্টাইল */
+    #menuContainer { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; padding: 20px; }
+    .menu-btn { background-color: var(--bg-dark); border: 1px solid var(--bg-medium); border-radius: 12px; color: var(--text-light); cursor: pointer; padding: 20px; text-align: center; transition: all 0.2s ease; width: 140px; }
+    .menu-btn:hover { background-color: var(--bg-medium); transform: translateY(-5px); }
+    .menu-btn svg { width: 48px; height: 48px; fill: var(--accent); margin-bottom: 12px; }
+    .menu-btn span { font-size: 16px; font-weight: 500; display: block; }
+    
+    /* নতুন ইউটিউব সার্চ স্টাইল */
+    #youtubeContainer { width: 100%; height: 100%; background-color: #000; display: none; flex-direction: column; padding: 16px; }
+    #youtubeSearchBox { display: flex; gap: 10px; margin-bottom: 16px; }
+    #youtubeSearchBox input { flex-grow: 1; background-color: var(--bg-dark); border: 1px solid var(--bg-medium); color: var(--text-light); padding: 10px 15px; border-radius: 8px; }
+    #youtubeSearchBox button { background-color: var(--accent); border: none; color: var(--bg-darker); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    #youtubeResults { flex-grow: 1; overflow-y: auto; }
+    .youtube-item { display: flex; gap: 12px; align-items: center; cursor: pointer; padding: 8px; border-radius: 8px; transition: background-color 0.2s; }
+    .youtube-item:hover { background-color: var(--bg-dark); }
+    .youtube-item img { width: 120px; height: 67px; object-fit: cover; border-radius: 6px; }
+    .youtube-item .title { font-size: 14px; font-weight: 500; }
+
+    /* মেনুতে ফিরে আসার বাটন */
+    #backToMenuBtn { position: absolute; top: 15px; left: 15px; background-color: rgba(0,0,0,0.6); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 50; display: none; align-items: center; justify-content: center; }
+    #backToMenuBtn svg { width: 24px; height: 24px; }
+
+    /* অনলাইন ব্যবহারকারীদের তালিকা */
+    .online-users-container { padding: 10px 16px; background-color: var(--bg-dark); display: flex; gap: 12px; align-items: center; overflow-x: auto; flex-shrink: 0; border-bottom: 1px solid var(--bg-medium); min-height: 60px; }
+    .online-users-container::-webkit-scrollbar { height: 4px; }
+    .online-users-container::-webkit-scrollbar-thumb { background: var(--bg-medium); border-radius: 2px; }
+    .online-user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); flex-shrink: 0; }
+    .online-users-container span { font-size: 14px; color: var(--text-muted); }
+    #audioStreamsContainer { display: none; } /* অডিও ট্যাগ লুকানোর জন্য */
+
+    /* আগের স্টাইল (কিছুটা অপরিবর্তিত) */
     .chat-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
     .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background-color: var(--bg-dark); border-bottom: 1px solid var(--bg-medium); flex-shrink: 0; }
     .chat-header h1 { font-size: 16px; margin: 0; font-weight: 600; }
@@ -111,30 +125,43 @@
     #lightbox .modal-content { background: none; border: none; width: auto; height: auto; max-width: 90vw; max-height: 90vh; padding: 0; }
     #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
     #lightboxClose { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; background: none; border: none; padding: 0; }
-    #playOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 15; transition: opacity 0.3s ease; }
-    #playOverlay.hidden { opacity: 0; pointer-events: none; }
-    #playOverlay .play-icon { width: 70px; height: 70px; fill: #fff; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
-    #playOverlay span { font-size: 16px; font-weight: 500; letter-spacing: 0.5px; user-select: none; }
   </style>
 </head>
 <body>
 
   <div class="video-container">
+    <div class="online-users-container" id="onlineUsersContainer">
+      <span>Loading online users...</span>
+    </div>
     <div class="video-wrapper" id="videoWrapper">
       <div class="video-loader"></div>
-      <video id="videoPlayer" playsinline autoplay muted></video>
-      <div id="playOverlay">
-        <svg class="play-icon" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
-        <span>Click to Play</span>
+      
+      <!-- নতুন মেনু -->
+      <div id="menuContainer">
+        <button class="menu-btn" id="playVideoBtn">
+          <svg viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>
+          <span>Play Video</span>
+        </button>
+        <button class="menu-btn" id="playYoutubeBtn">
+          <svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.25,4,12,4,12,4S5.75,4,4.186,4.418 C3.326,4.648,2.648,5.326,2.418,6.186C2,7.75,2,12,2,12s0,4.25,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.75,20,12,20,12,20s6.25,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.25,22,12,22,12S22,7.75,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z" /></svg>
+          <span>YouTube</span>
+        </button>
       </div>
-      <div class="ad-image-container" id="adImageContainer"></div>
-      <div class="ad-indicator" id="adIndicator">Advertisement</div>
-      <div class="video-overlay-controls">
-        <div class="live-indicator" id="liveIndicator">LIVE</div>
-        <button class="control-btn" id="fullscreenBtn" title="Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M7,17H10V19H5V14H7V17Z"/></svg></button>
+      
+      <!-- ইউটিউব সার্চ কন্টেইনার -->
+      <div id="youtubeContainer">
+        <div id="youtubeSearchBox">
+            <input type="text" id="youtubeQuery" placeholder="Search on YouTube...">
+            <button id="youtubeSearchBtn">Search</button>
+        </div>
+        <div id="youtubeResults"></div>
       </div>
+      
+      <video id="videoPlayer" playsinline controls style="display:none;"></video>
+      <button id="backToMenuBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </button>
     </div>
-    <div class="server-selection" id="serverSelection"></div>
   </div>
 
   <div class="app-container">
@@ -159,26 +186,28 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="profileModal"><div class="modal-content"><img id="avatarPreview" src="#" alt="Avatar Preview"/><h2>Join the Chat</h2><p>Create a profile with your name and photo to send messages.</p><input id="nameInput" type="text" placeholder="Your Name" /><label for="avatarFile" class="avatar-upload-label" id="avatarUploadText">Upload a Photo</label><input id="avatarFile" type="file" accept="image/*" style="display:none"/><button id="createProfileBtn">Create Profile</button><div id="uploading" style="color:var(--text-muted);font-size:12px;margin-top:8px;display:none;">Uploading...</div></div></div>
+  <div id="audioStreamsContainer"></div>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="profileModal"><div class="modal-content"><img id="avatarPreview" src="#" alt="Avatar Preview"/><h2>Join the Chat</h2><p>Create a profile to chat and talk.</p><input id="nameInput" type="text" placeholder="Your Name" /><label for="avatarFile" class="avatar-upload-label" id="avatarUploadText">Upload a Photo</label><input id="avatarFile" type="file" accept="image/*" style="display:none"/><button id="createProfileBtn">Create Profile</button><div id="uploading" style="color:var(--text-muted);font-size:12px;margin-top:8px;display:none;">Uploading...</div></div></div>
   <div class="modal-overlay" id="gifModal"><div class="modal-content"><input type="text" id="gifSearchInput" placeholder="Search for GIFs..."><div id="gifResults"></div></div></div>
   <div class="modal-overlay" id="lightbox"><div class="modal-content"><img id="lightboxImage" src=""><button id="lightboxClose">&times;</button></div></div>
   <div class="modal-overlay" id="withdrawModal"><div class="modal-content"><h2>Withdraw Balance</h2><p>You can withdraw 20 BDT via Grameenphone mobile recharge. Please enter your GP number (017... or 013...).</p><input id="withdrawNumberInput" type="tel" placeholder="e.g., 01700000000" /><button id="submitWithdrawBtn">Submit Request (20 BDT)</button></div></div>
 
-      <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database-compat.js"></script>
 
 <script>
+  // --- Configuration ---
   const firebaseConfig = { apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs", authDomain: "new-all-f99f7.firebaseapp.com", databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com", projectId: "new-all-f99f7", storageBucket: "new-all-f99f7.firebasestorage.app", messagingSenderId: "1069748173900", appId: "1:1069748173900:web:158d6336c0f4628133c8e9", measurementId: "G-V6DZ37WSBF" };
   const IMGBB_API_KEY = "4f29b88d8207f6e762c2c852d5c895f8";
   const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
-  const PROFILE_KEY = 'livechat_profile_v8';
-  const IMAGE_AD_DURATION = 4000;
+  const YOUTUBE_API_KEY = "AIzaSyCFrCuHFk0LNylLnilq5zl-arWoSdil7OE"; // <-- !!! এখানে আপনার ইউটিউব এপিআই কী বসান !!!
+  const PROFILE_KEY = 'livechat_profile_v9';
   const MIN_WITHDRAW_AMOUNT = 20;
+  const RTC_CONFIGURATION = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
   
   firebase.initializeApp(firebaseConfig);
   const firestore = firebase.firestore();
@@ -186,147 +215,308 @@
 
   const getEl = id => document.getElementById(id);
   const elements = {
-    videoWrapper: getEl('videoWrapper'), videoPlayer: getEl('videoPlayer'), adIndicator: getEl('adIndicator'),
-    adImageContainer: getEl('adImageContainer'), liveIndicator: getEl('liveIndicator'),
-    messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'),
-    sendBtn: getEl('sendBtn'), heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'),
-    profileModal: getEl('profileModal'), imageUploadBtn: getEl('imageUploadBtn'), gifBtn: getEl('gifBtn'),
-    imageInput: getEl('imageInput'), imagePreviewBox: getEl('imagePreviewBox'), avatarFile: getEl('avatarFile'),
-    profileStatusBox: getEl('profileStatusBox'), createProfileBtn: getEl('createProfileBtn'),
-    uploadingText: getEl('uploading'), serverSelectionBox: getEl('serverSelection'),
-    gifModal: getEl('gifModal'), gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'),
-    lightbox: getEl('lightbox'), lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'),
-    typingIndicator: getEl('typingIndicator'), playOverlay: getEl('playOverlay'),
-    avatarPreview: getEl('avatarPreview'),
-    withdrawModal: getEl('withdrawModal'), withdrawNumberInput: getEl('withdrawNumberInput'), submitWithdrawBtn: getEl('submitWithdrawBtn'),
+    videoWrapper: getEl('videoWrapper'), videoPlayer: getEl('videoPlayer'),
+    messagesBox: getEl('messagesBox'), msgInput: getEl('msgInput'), sendBtn: getEl('sendBtn'), 
+    heartBtn: getEl('heartBtn'), viewerCountEl: getEl('viewerCount'), profileModal: getEl('profileModal'),
+    imageUploadBtn: getEl('imageUploadBtn'), gifBtn: getEl('gifBtn'), imageInput: getEl('imageInput'),
+    imagePreviewBox: getEl('imagePreviewBox'), avatarFile: getEl('avatarFile'), profileStatusBox: getEl('profileStatusBox'),
+    createProfileBtn: getEl('createProfileBtn'), uploadingText: getEl('uploading'), gifModal: getEl('gifModal'),
+    gifSearchInput: getEl('gifSearchInput'), gifResults: getEl('gifResults'), lightbox: getEl('lightbox'),
+    lightboxImage: getEl('lightboxImage'), lightboxClose: getEl('lightboxClose'), typingIndicator: getEl('typingIndicator'),
+    avatarPreview: getEl('avatarPreview'), withdrawModal: getEl('withdrawModal'),
+    withdrawNumberInput: getEl('withdrawNumberInput'), submitWithdrawBtn: getEl('submitWithdrawBtn'),
+    onlineUsersContainer: getEl('onlineUsersContainer'), menuContainer: getEl('menuContainer'),
+
+    // নতুন Elements
+    backToMenuBtn: getEl('backToMenuBtn'), youtubeContainer: getEl('youtubeContainer'), 
+    youtubeQuery: getEl('youtubeQuery'), youtubeSearchBtn: getEl('youtubeSearchBtn'), youtubeResults: getEl('youtubeResults'),
+    audioStreamsContainer: getEl('audioStreamsContainer'),
   };
   
   let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-  let userBalance = 0;
-  let balanceListener = null;
-  let selectedImageFile = null; let hls; let controlsTimeout; let typingTimeout; let imageAdTimeout;
-  let state = { isAdPlaying: false, currentLiveUrl: null, currentAdData: null };
-  let userHasInteracted = false;
-
-  const removeTypingStatusOnUnload = () => {
-      if (profile && profile.uid) { rdb.ref('/typing/' + profile.uid).remove(); }
-  };
-  window.addEventListener('pagehide', removeTypingStatusOnUnload);
+  let userBalance = 0; let balanceListener = null; let selectedImageFile = null; let hls; let typingTimeout;
+  
+  // ভয়েস চ্যাটের জন্য ভ্যারিয়েবল
+  let localStream;
+  let peerConnections = {};
 
   document.addEventListener('DOMContentLoaded', () => {
-    initVideoPlayer(); initChat(); initModals(); initTiBot();
-    listenForServers(); listenForAds(); listenForTyping();
+    initApp();
+    initChat();
+    initModals();
+    initTiBot();
+    listenForTyping();
     setupPresence();
+    listenForOnlineUsers();
   });
-  
-  function handleFirstPlay() {
-    if (userHasInteracted) return;
-    userHasInteracted = true;
-    elements.videoPlayer.muted = false;
-    elements.videoPlayer.play().catch(e => console.warn("Play after interaction failed:", e));
-    elements.playOverlay.classList.add('hidden');
-  }
 
-  // --- Video Player & Ads Logic ---
-  function initVideoPlayer() {
-    getEl('fullscreenBtn').addEventListener('click', toggleFullscreen);
-    elements.videoWrapper.addEventListener('mousemove', showControls);
-    elements.videoWrapper.addEventListener('mouseleave', () => { clearTimeout(controlsTimeout); elements.videoWrapper.classList.remove('controls-visible'); });
-    elements.videoPlayer.addEventListener('waiting', () => elements.videoWrapper.classList.add('loading'));
-    ['canplay', 'playing', 'error'].forEach(evt => elements.videoPlayer.addEventListener(evt, () => elements.videoWrapper.classList.remove('loading')));
-    elements.videoPlayer.addEventListener('ended', handleVideoEnd);
-    elements.playOverlay.addEventListener('click', handleFirstPlay);
+  function initApp() {
+    showMainMenu();
+    elements.backToMenuBtn.onclick = showMainMenu;
+    getEl('playVideoBtn').onclick = playVideoFromPrompt;
+    getEl('playYoutubeBtn').onclick = showYoutubeUI;
+    elements.youtubeSearchBtn.onclick = searchYoutube;
+    elements.youtubeQuery.addEventListener('keydown', e => { if (e.key === 'Enter') searchYoutube(); });
   }
-  function handleVideoEnd() { if (state.isAdPlaying && state.currentAdData.type === 'video') { advancePlaylist(); } }
-  function advancePlaylist() { const { playlist, currentIndex } = state.currentAdData.playlistData; const nextIndex = (currentIndex + 1) % playlist.length; rdb.ref('advertisement/currentIndex').set(nextIndex); }
   
-  function toggleFullscreen() { 
-    const container = document.getElementById('videoWrapper'); 
-    if (!document.fullscreenElement) { 
-      container.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); 
-      if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(() => {}); 
-    } else { 
-      document.exitFullscreen(); 
-      if (screen.orientation?.unlock) screen.orientation.unlock(); 
-    } 
-  }
-
-  function showControls() { elements.videoWrapper.classList.add('controls-visible'); clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => elements.videoWrapper.classList.remove('controls-visible'), 3000); }
-  function listenForServers() { rdb.ref('servers').on('value', snapshot => { const servers = snapshot.val() || {}; const serverList = Object.keys(servers).map(key => ({...servers[key]})); elements.serverSelectionBox.innerHTML = '<span>Servers:</span>'; if (serverList.length === 0) { elements.serverSelectionBox.innerHTML += '<span>No servers available.</span>'; return; } let activeUrl = document.querySelector('.server-btn.active')?.dataset.url; serverList.forEach(server => { const button = document.createElement('button'); button.className = 'server-btn'; button.textContent = server.name; button.dataset.url = server.url; if(server.url === activeUrl) button.classList.add('active'); button.addEventListener('click', () => { if (state.isAdPlaying) return; document.querySelector('.server-btn.active')?.classList.remove('active'); button.classList.add('active'); loadSource(server.url); }); elements.serverSelectionBox.appendChild(button); }); if (!activeUrl && !state.isAdPlaying && elements.serverSelectionBox.querySelector('.server-btn')) { elements.serverSelectionBox.querySelector('.server-btn').click(); } }); }
-  
-    // *** পরিবর্তন: স্মার্ট লিঙ্ক হ্যান্ডলিং এবং iframe Fallback ***
-  function loadSource(url, isLiveStream = true) {
-      if (isLiveStream) state.currentLiveUrl = url;
-      elements.videoWrapper.classList.add('loading');
-      
-      // আগের কোনো iframe বা hls instance থাকলে সেটা পরিষ্কার করি
+  // --- নতুন মেনু ও প্লেয়ার লজিক ---
+  function showMainMenu() {
+      // চলমান সবকিছু বন্ধ করুন
+      if (hls) { hls.destroy(); hls = null; }
+      elements.videoPlayer.src = '';
+      elements.videoPlayer.style.display = 'none';
       const existingIframe = elements.videoWrapper.querySelector('iframe');
       if (existingIframe) existingIframe.remove();
-      if (hls) {
-          hls.destroy();
-          hls = null; // hls instance রিসেট করি
+      
+      // UI পরিবর্তন করুন
+      elements.menuContainer.style.display = 'flex';
+      elements.youtubeContainer.style.display = 'none';
+      elements.backToMenuBtn.style.display = 'none';
+  }
+
+  function playVideoFromPrompt() {
+      const url = prompt("Please enter the video URL (.m3u8, .mp4, etc.):");
+      if (url) {
+          elements.menuContainer.style.display = 'none';
+          elements.backToMenuBtn.style.display = 'flex';
+          loadSource(url);
       }
-      elements.videoPlayer.src = ''; // আগের সোর্স পরিষ্কার করি
+  }
 
-      // ভিডিও প্লেয়ার আবার দৃশ্যমান করি এবং মিউট স্ট্যাটাস ঠিক রাখি
+  function showYoutubeUI() {
+    if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
+        alert("YouTube feature is not configured. An API key is required.");
+        return;
+    }
+    elements.menuContainer.style.display = 'none';
+    elements.youtubeContainer.style.display = 'flex';
+    elements.backToMenuBtn.style.display = 'flex';
+  }
+
+  async function searchYoutube() {
+      const query = elements.youtubeQuery.value.trim();
+      if (!query) return;
+      elements.youtubeResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>';
+      try {
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video&maxResults=20`);
+        const data = await response.json();
+        if (data.items) {
+          elements.youtubeResults.innerHTML = data.items.map(item => `
+            <div class="youtube-item" data-video-id="${item.id.videoId}">
+              <img src="${item.snippet.thumbnails.default.url}" alt="${escapeHtml(item.snippet.title)}">
+              <span class="title">${escapeHtml(item.snippet.title)}</span>
+            </div>
+          `).join('');
+          elements.youtubeResults.querySelectorAll('.youtube-item').forEach(item => {
+            item.onclick = () => playYoutubeVideo(item.dataset.videoId);
+          });
+        }
+      } catch (e) {
+        console.error("YouTube search failed", e);
+        elements.youtubeResults.innerHTML = '<span>Search failed. Please check the API key and console for errors.</span>';
+      }
+  }
+
+  function playYoutubeVideo(videoId) {
+      elements.youtubeContainer.style.display = 'none';
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
+      switchToIframe(embedUrl);
+  }
+
+  function loadSource(url) {
+      elements.videoWrapper.classList.add('loading');
+      if (hls) { hls.destroy(); hls = null; }
+      const existingIframe = elements.videoWrapper.querySelector('iframe');
+      if(existingIframe) existingIframe.remove();
+      
       elements.videoPlayer.style.display = 'block';
-      if (userHasInteracted) elements.videoPlayer.muted = false;
-
+      elements.videoPlayer.src = '';
+      
       const isM3U8 = url.includes('.m3u8');
-      // .mp4, .mkv, .webm এর মতো সরাসরি ভিডিও লিঙ্ক চেক করার জন্য Regex
       const isDirectVideo = /\.(mp4|mkv|webm|mov)(\?.*)?$/.test(url);
-      const isYouTubeEmbed = /youtube\.com\/embed\//.test(url);
 
       if (isM3U8 && Hls.isSupported()) {
-          // এটি একটি HLS (.m3u8) লিঙ্ক, hls.js ব্যবহার করি
-          hls = new Hls();
-          hls.loadSource(url);
-          hls.attachMedia(elements.videoPlayer);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => {
-              elements.videoPlayer.play().catch(() => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); });
-          });
-          // hls.js এর error handling আগের মতোই থাকবে
-          hls.on(Hls.Events.ERROR, (event, data) => {
-              if (data.fatal) {
-                  console.error('HLS.js Error:', data.details);
-              }
-          });
+          hls = new Hls(); hls.loadSource(url); hls.attachMedia(elements.videoPlayer);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => elements.videoPlayer.play().catch(e => console.warn(e)));
       } else if (isDirectVideo) {
-          // এটি একটি সরাসরি ভিডিও লিঙ্ক (.mp4, .mkv ইত্যাদি), native video player ব্যবহার করি
           elements.videoPlayer.src = url;
-          elements.videoPlayer.play().catch(() => { if (!userHasInteracted) elements.playOverlay.classList.remove('hidden'); });
-      } else if (isYouTubeEmbed) {
-          // এটি ইউটিউব এম্বেড লিঙ্ক, কন্ট্রোল বাটন ছাড়া iframe এ প্লে করি
-          let embedUrl = new URL(url);
-          embedUrl.searchParams.set('autoplay', '1');
-          embedUrl.searchParams.set('controls', '0'); // ইউটিউবের কন্ট্রোল হাইড করে
-          embedUrl.searchParams.set('modestbranding', '1');
-          embedUrl.searchParams.set('showinfo', '0');
-          switchToIframe(embedUrl.toString());
+          elements.videoPlayer.play().catch(e => console.warn(e));
       } else {
-          // এটি সম্ভবত একটি ওয়েবসাইট লিঙ্ক, তাই iframe ব্যবহার করি
           switchToIframe(url);
       }
+      ['canplay', 'playing', 'error'].forEach(evt => elements.videoPlayer.addEventListener(evt, () => elements.videoWrapper.classList.remove('loading')));
   }
 
   function switchToIframe(url) {
-      elements.videoPlayer.style.display = 'none'; // মূল ভিডিও প্লেয়ার লুকিয়ে ফেলি
+      elements.videoPlayer.style.display = 'none';
       const iframe = document.createElement('iframe');
       iframe.src = url;
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
-      iframe.allow = "autoplay; encrypted-media; fullscreen";
+      iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = 'none';
+      iframe.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
       elements.videoWrapper.appendChild(iframe);
       elements.videoWrapper.classList.remove('loading');
   }
 
-  function listenForAds() { rdb.ref('advertisement').on('value', snapshot => { const adData = snapshot.val(); if (adData && adData.isActive && adData.playlist?.length > 0) { const currentAd = adData.playlist[adData.currentIndex]; state.currentAdData = { ...currentAd, playlistData: adData }; playAd(currentAd); } else if (state.isAdPlaying) { restoreLiveStream(); } }); }
-  function playAd(ad) { if (!state.isAdPlaying) { if (hls) hls.destroy(); } state.isAdPlaying = true; clearTimeout(imageAdTimeout); elements.liveIndicator.style.display = 'none'; elements.adIndicator.style.display = 'block'; elements.adIndicator.textContent = `Ad: ${ad.name}`; if (ad.type === 'video') { elements.adImageContainer.style.display = 'none'; elements.videoPlayer.style.display = 'block'; loadSource(ad.url, false); } else { elements.videoPlayer.style.display = 'none'; elements.videoPlayer.pause(); elements.adImageContainer.style.backgroundImage = `url(${ad.url})`; elements.adImageContainer.style.display = 'block'; imageAdTimeout = setTimeout(advancePlaylist, IMAGE_AD_DURATION); } }
-  function restoreLiveStream() { state.isAdPlaying = false; clearTimeout(imageAdTimeout); elements.adIndicator.style.display = 'none'; elements.liveIndicator.style.display = 'flex'; elements.adImageContainer.style.display = 'none'; elements.videoPlayer.style.display = 'block'; if (state.currentLiveUrl) { loadSource(state.currentLiveUrl, true); } }
+  // --- অনলাইন ব্যবহারকারী এবং উপস্থিতি লজিক ---
+  function setupPresence() {
+    const uid = (profile?.uid) || (localStorage.getItem('livechat_presence_uid') || 'guest_' + Date.now());
+    localStorage.setItem('livechat_presence_uid', uid);
+    const userStatusRef = rdb.ref('/presence/' + uid);
+    rdb.ref('.info/connected').on('value', snap => {
+      if (snap.val()) {
+        userStatusRef.onDisconnect().remove();
+        const presenceData = { name: profile?.name || 'Guest', uid: profile?.uid };
+        if (profile?.avatar) presenceData.avatar = profile.avatar;
+        userStatusRef.set(presenceData); 
+        
+        if(profile) { 
+            rdb.ref('/typing/' + profile.uid).onDisconnect().remove();
+            rdb.ref('/webrtc_signals/' + profile.uid).onDisconnect().remove();
+        }
+      }
+    });
+    rdb.ref('presence').on('value', snap => { elements.viewerCountEl.textContent = `● ${snap.numChildren()} watching`; });
+  }
+
+  function listenForOnlineUsers() {
+    rdb.ref('presence').on('value', snapshot => {
+      const users = snapshot.val() || {};
+      elements.onlineUsersContainer.innerHTML = '';
+      if (Object.keys(users).length === 0) {
+        elements.onlineUsersContainer.innerHTML = '<span>No one is online.</span>';
+        return;
+      }
+      Object.values(users).forEach(user => {
+          if (user.avatar) {
+              const img = document.createElement('img');
+              img.src = user.avatar;
+              img.title = user.name;
+              img.className = 'online-user-avatar';
+              elements.onlineUsersContainer.appendChild(img);
+          }
+      });
+      
+      // WebRTC কানেকশন ম্যানেজ করুন
+      if(profile && localStream) manageRtcConnections(Object.values(users));
+    });
+  }
+
+  // --- WebRTC ভয়েস চ্যাট লজিক ---
+  async function initVoiceChat() {
+      if (!profile) return;
+      try {
+          localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          console.log("Microphone access granted.");
+          // এখন অনলাইন ব্যবহারকারীদের তালিকা আবার পান এবং কানেকশন শুরু করুন
+          const presenceSnap = await rdb.ref('presence').get();
+          if (presenceSnap.exists()) {
+              manageRtcConnections(Object.values(presenceSnap.val()));
+          }
+      } catch (e) {
+          console.error("Microphone access denied:", e);
+          alert("Microphone access is required for voice chat.");
+      }
+  }
+
+  function manageRtcConnections(onlineUsers) {
+      if (!profile || !localStream) return;
+      const onlineUserUids = onlineUsers.map(u => u.uid).filter(uid => uid && uid !== profile.uid);
+
+      // নতুন ব্যবহারকারীদের সাথে কানেক্ট করুন
+      for (const uid of onlineUserUids) {
+          if (!peerConnections[uid]) {
+              createPeerConnection(uid);
+          }
+      }
+
+      // যারা চলে গেছে তাদের কানেকশন বন্ধ করুন
+      for (const uid in peerConnections) {
+          if (!onlineUserUids.includes(uid)) {
+              peerConnections[uid].close();
+              delete peerConnections[uid];
+              const audioEl = getEl('audio_' + uid);
+              if (audioEl) audioEl.remove();
+          }
+      }
+  }
   
-  // --- Chat Logic ---
+  function createPeerConnection(remoteUid) {
+    console.log(`Creating peer connection to ${remoteUid}`);
+    const pc = new RTCPeerConnection(RTC_CONFIGURATION);
+    peerConnections[remoteUid] = pc;
+
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+    pc.onicecandidate = event => {
+        if (event.candidate) {
+            rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ ice: event.candidate });
+        }
+    };
+
+    pc.ontrack = event => {
+        console.log(`Receiving remote stream from ${remoteUid}`);
+        let audioEl = getEl('audio_' + remoteUid);
+        if (!audioEl) {
+            audioEl = document.createElement('audio');
+            audioEl.id = 'audio_' + remoteUid;
+            audioEl.autoplay = true;
+            elements.audioStreamsContainer.appendChild(audioEl);
+        }
+        audioEl.srcObject = event.streams[0];
+    };
+
+    pc.onnegotiationneeded = async () => {
+      try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        rdb.ref(`/webrtc_signals/${remoteUid}/${profile.uid}`).push({ sdp: pc.localDescription });
+      } catch(e) { console.error("Offer creation failed", e); }
+    };
+  }
+
+  function listenForRtcSignals() {
+      if (!profile) return;
+      const signalsRef = rdb.ref(`/webrtc_signals/${profile.uid}`);
+      signalsRef.on('child_added', snapshot => {
+          const senderUid = snapshot.key;
+          snapshot.ref.on('child_added', async msgSnap => {
+              const message = msgSnap.val();
+              const pc = peerConnections[senderUid];
+              
+              if (!pc) {
+                 // যদি কানেকশন না থাকে, নতুন করে তৈরি করে সিগন্যাল প্রসেস করুন
+                 createPeerConnection(senderUid);
+                 // একটু সময় দিন কানেকশন তৈরি হওয়ার জন্য
+                 setTimeout(() => handleSignalMessage(senderUid, message), 500);
+              } else {
+                 handleSignalMessage(senderUid, message);
+              }
+              msgSnap.ref.remove(); // সিগন্যাল পাওয়ার পর মুছে দিন
+          });
+      });
+  }
+
+  async function handleSignalMessage(senderUid, message) {
+    const pc = peerConnections[senderUid];
+    if (!pc) return;
+
+    try {
+        if (message.sdp) {
+            await pc.setRemoteDescription(new RTCSessionDescription(message.sdp));
+            if (message.sdp.type === 'offer') {
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                rdb.ref(`/webrtc_signals/${senderUid}/${profile.uid}`).push({ sdp: pc.localDescription });
+            }
+        } else if (message.ice) {
+            await pc.addIceCandidate(new RTCIceCandidate(message.ice));
+        }
+    } catch (e) { console.error("Signal handling error", e); }
+  }
+
+
+  // --- আগের চ্যাট এবং অন্যান্য লজিক (অপরিবর্তিত) ---
   function initChat() {
     renderProfileStatus();
     elements.msgInput.addEventListener('focus', () => { if (!profile) elements.profileModal.style.display = 'flex'; });
@@ -359,10 +549,17 @@
       const heart = document.createElement('div');
       heart.className = 'floating-heart';
       heart.innerHTML = '❤️';
+      heart.style.position = 'absolute'; heart.style.bottom = '20px'; heart.style.zIndex = 25;
       heart.style.left = `${Math.random() * 40 + 30}%`;
-      heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
-      elements.videoWrapper.appendChild(heart);
+      heart.style.animation = `floatUp ${Math.random() * 2 + 3}s ease-out forwards`;
+      getEl('video-container').appendChild(heart);
       setTimeout(() => heart.remove(), 4000);
+      if(!document.getElementById('floatUpAnimation')) {
+          const style = document.createElement('style');
+          style.id = 'floatUpAnimation';
+          style.innerHTML = `@keyframes floatUp { to { transform: translateY(-350px) scale(1.2); opacity: 0; } }`;
+          document.head.appendChild(style);
+      }
   }
 
   const updateSendButtonState = () => {
@@ -370,21 +567,14 @@
       elements.sendBtn.classList.toggle('visible', hasContent);
       elements.heartBtn.classList.toggle('hidden', hasContent);
   };
-
-  window.cancelImageUpload = () => { 
-      selectedImageFile = null; elements.imageInput.value = ''; 
-      elements.imagePreviewBox.innerHTML = ''; updateSendButtonState();
-  };
-
+  window.cancelImageUpload = () => { selectedImageFile = null; elements.imageInput.value = ''; elements.imagePreviewBox.innerHTML = ''; updateSendButtonState(); };
   async function sendMessage() {
     if (!profile) return;
     const text = elements.msgInput.value.trim();
     if (!text && !selectedImageFile) return;
-    
     rdb.ref('/typing/' + profile.uid).remove();
     const [tempImage, tempText] = [selectedImageFile, text];
     elements.msgInput.value = ''; cancelImageUpload();
-    
     try {
       let imageUrl = null;
       if (tempImage) imageUrl = await uploadToImgbb(tempImage);
@@ -392,35 +582,29 @@
       if (tempText) messageData.text = tempText;
       if (imageUrl) messageData.imageUrl = imageUrl;
       await firestore.collection('chats').add(messageData);
-      if (tempText) { updateUserPoints(profile.uid, 5); }
-      else if (imageUrl) { updateUserPoints(profile.uid, 5); } // Image or GIF upload also gives 5 points
+      updateUserPoints(profile.uid, 5);
     } catch (e) { console.error("Send failed:", e); }
   }
-  
-  // *** পরিবর্তন: চ্যাট অটো-স্ক্রল সমস্যার সমাধান ***
   function handleNewMessages(snapshot) {
-    elements.messagesBox.innerHTML = snapshot.docs.map(doc => {
-      const data = doc.data();
-      const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-      const msgType = data.type || 'message';
-
-      switch(msgType) {
-          case 'gift':
-              return `<div class="message gift-message"><div class="content"><div class="text">🎁 <strong>${escapeHtml(data.botName)}</strong> gifted <strong>${data.amount} BDT</strong> to <strong>${escapeHtml(data.recipientName)}</strong>!</div></div></div>`;
-          case 'withdrawal_notification':
-              return `<div class="message notification-message"><div class="content"><strong>${escapeHtml(data.name)}</strong> has submitted a withdrawal request for <strong>${data.amount} BDT</strong>.</div></div>`;
-          default:
-              return `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
-      }
-    }).join('');
-    
-    // এই setTimeout নিশ্চিত করে যে DOM আপডেট হওয়ার পরই স্ক্রল হবে
-    setTimeout(() => {
-        elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight;
-    }, 0);
+    const wasScrolledToBottom = elements.messagesBox.scrollHeight - elements.messagesBox.clientHeight <= elements.messagesBox.scrollTop + 1;
+    snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+            const data = change.doc.data();
+            const time = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+            const msgType = data.type || 'message';
+            let messageHtml = '';
+            switch(msgType) {
+                case 'gift': messageHtml = `<div class="message gift-message"><div class="content"><div class="text">🎁 <strong>${escapeHtml(data.botName)}</strong> gifted <strong>${data.amount} BDT</strong> to <strong>${escapeHtml(data.recipientName)}</strong>!</div></div></div>`; break;
+                case 'withdrawal_notification': messageHtml = `<div class="message notification-message"><div class="content"><strong>${escapeHtml(data.name)}</strong> has submitted a withdrawal request for <strong>${data.amount} BDT</strong>.</div></div>`; break;
+                default: messageHtml = `<div class="message"><img src="${data.avatar}" alt="avatar" class="avatar"><div class="content"><div class="metadata"><div class="name">${escapeHtml(data.name)}</div><div class="time">${time}</div></div>${data.imageUrl ? `<img src="${data.imageUrl}" class="chat-image" onclick="openLightbox('${data.imageUrl}')">` : ''}${data.text ? `<div class="text">${escapeHtml(data.text)}</div>` : ''}</div></div>`;
+            }
+            elements.messagesBox.innerHTML += messageHtml;
+        }
+    });
+    if(wasScrolledToBottom) {
+        setTimeout(() => { elements.messagesBox.scrollTop = elements.messagesBox.scrollHeight; }, 0);
+    }
   }
-  
-  // --- এর পরের কোডে কোনো পরিবর্তন করা হয়নি ---
   function initModals() {
     elements.gifBtn.onclick = () => { if (!profile) elements.profileModal.style.display = 'flex'; else openGifModal(); };
     elements.gifModal.onclick = (e) => { if (e.target === elements.gifModal) elements.gifModal.style.display = 'none'; };
@@ -430,67 +614,31 @@
       const file = elements.avatarFile.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = e => {
-          elements.avatarPreview.src = e.target.result;
-          elements.avatarPreview.style.display = 'block';
-        };
+        reader.onload = e => { elements.avatarPreview.src = e.target.result; elements.avatarPreview.style.display = 'block'; };
         reader.readAsDataURL(file);
       }
     };
     elements.withdrawModal.onclick = (e) => { if (e.target === elements.withdrawModal) elements.withdrawModal.style.display = 'none'; };
     elements.submitWithdrawBtn.onclick = submitWithdrawal;
   }
-
   async function openGifModal() { if (!GIPHY_API_KEY || GIPHY_API_KEY === "YOUR_GIPHY_API_KEY") return alert("Giphy API Key is not configured."); elements.gifModal.style.display = 'flex'; elements.gifResults.innerHTML = '<div class="video-loader" style="display:block; position:relative; margin:auto;"></div>'; const response = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=30`); const json = await response.json(); renderGifs(json.data); }
   async function searchGifs(query) { const endpoint = query ? `search?q=${encodeURIComponent(query)}&` : 'trending?'; const response = await fetch(`https://api.giphy.com/v1/gifs/${endpoint}api_key=${GIPHY_API_KEY}&limit=30`); const json = await response.json(); renderGifs(json.data); }
   function renderGifs(gifs) { elements.gifResults.innerHTML = gifs.map(gif => `<img src="${gif.images.fixed_width.url}" alt="${gif.title}" data-full-url="${gif.images.original.url}">`).join(''); elements.gifResults.querySelectorAll('img').forEach(img => { img.onclick = () => { sendGif(img.dataset.fullUrl); elements.gifModal.style.display = 'none'; }; }); }
   async function sendGif(gifUrl) { if (!profile) return; await firestore.collection('chats').add({ ...profile, type: 'message', imageUrl: gifUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); updateUserPoints(profile.uid, 5); }
   window.openLightbox = (url) => { elements.lightboxImage.src = url; elements.lightbox.style.display = 'flex'; };
-
   function renderProfileStatus() {
     if (profile && profile.uid) {
-      elements.profileStatusBox.innerHTML = `<div class="profile-status">
-        <img src="${profile.avatar}">
-        <span class="name">As <strong>${escapeHtml(profile.name)}</strong></span>
-        <div class="wallet-info">
-          <span class="balance" id="userBalanceDisplay">৳ 0.00</span>
-          <button class="withdraw-btn locked" id="withdrawBtn" title="Withdraw (Minimum 20 BDT)">
-            <svg viewBox="0 0 24 24"><path d="M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z"/></svg>
-            Withdraw
-          </button>
-        </div>
-        <button class="signout-btn" onclick="signOut()" title="Sign Out">&times;</button>
-      </div>`;
-      getEl('withdrawBtn').onclick = openWithdrawModal;
-      listenForBalanceChanges(profile.uid);
+      elements.profileStatusBox.innerHTML = `<div class="profile-status"><img src="${profile.avatar}"><span class="name">As <strong>${escapeHtml(profile.name)}</strong></span><div class="wallet-info"><span class="balance" id="userBalanceDisplay">৳ 0.00</span><button class="withdraw-btn locked" id="withdrawBtn" title="Withdraw (Minimum 20 BDT)"><svg viewBox="0 0 24 24"><path d="M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z"/></svg>Withdraw</button></div><button class="signout-btn" onclick="signOut()" title="Sign Out">&times;</button></div>`;
+      getEl('withdrawBtn').onclick = openWithdrawModal; listenForBalanceChanges(profile.uid);
     } else {
-      elements.profileStatusBox.innerHTML = '';
-      if (balanceListener) {
-          balanceListener.off();
-          balanceListener = null;
-      }
+      elements.profileStatusBox.innerHTML = ''; if (balanceListener) { balanceListener.off(); balanceListener = null; }
     }
   }
-  
-  window.signOut = () => {
-    if (confirm('Are you sure you want to sign out?')) {
-      removeTypingStatusOnUnload();
-      if(balanceListener) {
-          balanceListener.off();
-          balanceListener = null;
-      }
-      profile = null;
-      localStorage.removeItem(PROFILE_KEY);
-      renderProfileStatus();
-    }
-  };
-  
+  window.signOut = () => { if (confirm('Are you sure you want to sign out?')) { if(profile && profile.uid) { rdb.ref('/typing/' + profile.uid).remove(); rdb.ref('/webrtc_signals/' + profile.uid).remove(); rdb.ref('/presence/' + localStorage.getItem('livechat_presence_uid')).remove(); } if(balanceListener) { balanceListener.off(); balanceListener = null; } localStream?.getTracks().forEach(track => track.stop()); profile = null; localStorage.removeItem(PROFILE_KEY); renderProfileStatus(); window.location.reload(); } };
   elements.createProfileBtn.onclick = async () => {
-    const name = getEl('nameInput').value.trim();
-    const file = elements.avatarFile.files[0];
+    const name = getEl('nameInput').value.trim(); const file = elements.avatarFile.files[0];
     if (!name || !file) return alert('Please provide both name and photo.');
-    elements.uploadingText.style.display = 'block';
-    elements.createProfileBtn.disabled = true;
+    elements.uploadingText.style.display = 'block'; elements.createProfileBtn.disabled = true;
     try {
       const avatarUrl = await uploadToImgbb(file);
       const uid = 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
@@ -498,201 +646,26 @@
       localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
       await rdb.ref('users/' + uid).set({ balance: 0, points: 0 });
       elements.profileModal.style.display = 'none';
-      renderProfileStatus();
-      setupPresence();
-    } catch (e) {
-      alert("Profile creation failed."); console.error(e);
-    } finally {
-      elements.uploadingText.style.display = 'none';
-      elements.createProfileBtn.disabled = false;
-      elements.avatarPreview.style.display = 'none';
-    }
+      renderProfileStatus(); setupPresence(); initVoiceChat(); listenForRtcSignals(); // প্রোফাইল তৈরির পর ভয়েস চ্যাট শুরু করুন
+    } catch (e) { alert("Profile creation failed."); console.error(e);
+    } finally { elements.uploadingText.style.display = 'none'; elements.createProfileBtn.disabled = false; elements.avatarPreview.style.display = 'none'; }
   };
-
-  function setupPresence() {
-    const uid = (profile?.uid) || (localStorage.getItem('livechat_presence_uid') || 'guest_' + Date.now());
-    localStorage.setItem('livechat_presence_uid', uid);
-    const userStatusRef = rdb.ref('/presence/' + uid);
-    rdb.ref('.info/connected').on('value', snap => {
-      if (snap.val()) { 
-        userStatusRef.onDisconnect().remove();
-        userStatusRef.set({ name: profile?.name || 'Guest', uid: profile?.uid }); 
-        if(profile) { rdb.ref('/typing/' + profile.uid).onDisconnect().remove(); }
-      }
-    });
-    rdb.ref('presence').on('value', snap => { elements.viewerCountEl.textContent = `● ${snap.numChildren()} watching`; });
-  }
-
-  function listenForTyping() {
-    rdb.ref('/typing').on('value', snap => {
-      const typers = snap.val() || {};
-      const activeTypers = Object.keys(typers)
-        .filter(uid => uid !== profile?.uid)
-        .map(uid => escapeHtml(typers[uid]));
-      
-      if(activeTypers.length > 0) {
-        let text = activeTypers.slice(0, 2).join(', ') + (activeTypers.length > 2 ? ' and others' : '');
-        text += (activeTypers.length > 1 ? ' are' : ' is') + ' typing...';
-        elements.typingIndicator.textContent = text;
-        elements.typingIndicator.classList.add('visible');
-      } else {
-        elements.typingIndicator.classList.remove('visible');
-      }
-    });
-  }
-
-  function listenForBalanceChanges(uid) {
-    if (balanceListener) balanceListener.off();
-    const userBalanceRef = rdb.ref('users/' + uid + '/balance');
-    balanceListener = userBalanceRef.on('value', snapshot => {
-      userBalance = snapshot.val() || 0;
-      const balanceDisplay = getEl('userBalanceDisplay');
-      const withdrawBtn = getEl('withdrawBtn');
-      if (balanceDisplay) balanceDisplay.textContent = `৳ ${userBalance.toFixed(2)}`;
-      if (withdrawBtn) {
-        if (userBalance >= MIN_WITHDRAW_AMOUNT) {
-          withdrawBtn.classList.remove('locked');
-          withdrawBtn.disabled = false;
-          withdrawBtn.querySelector('svg path').setAttribute('d', 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6H8.9V8H15.1V6A3.1,3.1 0 0,0 12,2.9A3.1,3.1 0 0,0 8.9,6H7V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17Z');
-        } else {
-          withdrawBtn.classList.add('locked');
-          withdrawBtn.disabled = true;
-          withdrawBtn.querySelector('svg path').setAttribute('d', 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z');
-        }
-      }
-    });
-  }
-
-  function openWithdrawModal() {
-    if(userBalance < MIN_WITHDRAW_AMOUNT) {
-      alert(`You need at least ${MIN_WITHDRAW_AMOUNT} BDT to withdraw.`);
-      return;
-    }
-    elements.withdrawModal.style.display = 'flex';
-  }
-
-  async function submitWithdrawal() {
-    const number = elements.withdrawNumberInput.value.trim();
-    const gpRegex = /^(017|013)\d{8}$/;
-    if (!gpRegex.test(number)) {
-      alert('Please enter a valid Grameenphone number (e.g., 017... or 013...).');
-      return;
-    }
-    if (userBalance < MIN_WITHDRAW_AMOUNT) {
-      alert('Insufficient balance.');
-      return;
-    }
-
-    this.disabled = true;
-    try {
-      const newBalance = userBalance - MIN_WITHDRAW_AMOUNT;
-      await rdb.ref('users/' + profile.uid + '/balance').set(newBalance);
-      await rdb.ref('withdrawal_requests').push({
-        uid: profile.uid, name: profile.name, number: number, amount: MIN_WITHDRAW_AMOUNT,
-        status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP
-      });
-      await firestore.collection('chats').add({
-        type: 'withdrawal_notification', name: profile.name, amount: MIN_WITHDRAW_AMOUNT,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      alert('Withdrawal request submitted successfully! It will be processed soon.');
-      elements.withdrawModal.style.display = 'none';
-      elements.withdrawNumberInput.value = '';
-    } catch (error) {
-      alert('An error occurred. Please try again.');
-      console.error('Withdrawal Error:', error);
-    } finally {
-      this.disabled = false;
-    }
-  }
-
-  async function updateUserPoints(uid, pointsToAdd) {
-      if (!uid) return;
-      const userRef = rdb.ref('users/' + uid);
-      const snapshot = await userRef.get();
-      if (snapshot.exists()) {
-          const currentPoints = snapshot.val().points || 0;
-          userRef.child('points').set(currentPoints + pointsToAdd);
-      }
-  }
-
-  // *** নতুন আপডেটেড Ti Bot লজিক: প্রতি 2 মিনিটে highest activity user + occasional random gift ***
-  function initTiBot() {
-    setInterval(async () => {
-      try {
-          // বর্তমান online users (watching) পান
-          const presenceSnap = await rdb.ref('presence').get();
-          const onlineUsers = presenceSnap.val() || {};
-          if (!onlineUsers) return;
-
-          // শুধুমাত্র registered users (uid starts with 'u_') ফিল্টার করুন
-          const userUIDs = Object.values(onlineUsers)
-              .filter(u => u.uid && u.uid.startsWith('u_'))
-              .map(u => u.uid);
-
-          if (userUIDs.length === 0) return;
-
-          // সব users-এর points fetch করুন
-          const usersSnap = await rdb.ref('users').get();
-          const usersData = usersSnap.val() || {};
-          const activeUsers = userUIDs
-              .map(uid => {
-                  const userData = usersData[uid];
-                  return {
-                      uid,
-                      points: userData?.points || 0,
-                      balance: userData?.balance || 0,
-                      name: onlineUsers[Object.keys(onlineUsers).find(key => onlineUsers[key].uid === uid)]?.name || 'A User'
-                  };
-              })
-              .filter(u => u.points > 0); // শুধুমাত্র যাদের activity আছে (points > 0)
-
-          if (activeUsers.length === 0) return;
-
-          // 1. Highest points user-কে gift দিন (শীর্ষ activity)
-          const highestUser = activeUsers.reduce((max, user) => user.points > max.points ? user : max);
-          const giftAmount = 1;
-          await rdb.ref('users/' + highestUser.uid).update({
-              balance: highestUser.balance + giftAmount,
-              points: 0 // Reset points after gift to encourage ongoing activity
-          });
-
-          // Gift notification
-          await firestore.collection('chats').add({
-              type: 'gift',
-              botName: 'Ti Bot',
-              recipientName: highestUser.name,
-              amount: giftAmount,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-
-          // 2. মাঝেমধ্যে (30% chance) random user-কে gift দিন (সব online users থেকে, active না হলেও)
-          if (Math.random() < 0.3) {
-              const randomUser = userUIDs[Math.floor(Math.random() * userUIDs.length)];
-              const randomUserData = usersData[randomUser] || { balance: 0 };
-              const randomUserName = onlineUsers[Object.keys(onlineUsers).find(key => onlineUsers[key].uid === randomUser)]?.name || 'A User';
-
-              await rdb.ref('users/' + randomUser).update({
-                  balance: randomUserData.balance + giftAmount
-              });
-
-              // Random gift notification
-              await firestore.collection('chats').add({
-                  type: 'gift',
-                  botName: 'Ti Bot',
-                  recipientName: randomUserName,
-                  amount: giftAmount,
-                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
-              });
-          }
-
-      } catch (error) { console.error("Ti Bot Error:", error); }
-    }, 120000); // প্রতি 2 মিনিটে (120000 ms)
-  }
-
+  function listenForTyping() { rdb.ref('/typing').on('value', snap => { const typers = snap.val() || {}; const activeTypers = Object.keys(typers).filter(uid => uid !== profile?.uid).map(uid => escapeHtml(typers[uid])); if(activeTypers.length > 0) { let text = activeTypers.slice(0, 2).join(', ') + (activeTypers.length > 2 ? ' and others' : ''); text += (activeTypers.length > 1 ? ' are' : ' is') + ' typing...'; elements.typingIndicator.textContent = text; elements.typingIndicator.classList.add('visible'); } else { elements.typingIndicator.classList.remove('visible'); } }); }
+  function listenForBalanceChanges(uid) { if (balanceListener) balanceListener.off(); const userBalanceRef = rdb.ref('users/' + uid + '/balance'); balanceListener = userBalanceRef.on('value', snapshot => { userBalance = snapshot.val() || 0; const balanceDisplay = getEl('userBalanceDisplay'); const withdrawBtn = getEl('withdrawBtn'); if (balanceDisplay) balanceDisplay.textContent = `৳ ${userBalance.toFixed(2)}`; if (withdrawBtn) { if (userBalance >= MIN_WITHDRAW_AMOUNT) { withdrawBtn.classList.remove('locked'); withdrawBtn.disabled = false; withdrawBtn.querySelector('svg path').setAttribute('d', 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6H8.9V8H15.1V6A3.1,3.1 0 0,0 12,2.9A3.1,3.1 0 0,0 8.9,6H7V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17Z'); } else { withdrawBtn.classList.add('locked'); withdrawBtn.disabled = true; withdrawBtn.querySelector('svg path').setAttribute('d', 'M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,17A2,2 0 0,1 10,15A2,2 0 0,1 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M15.1,8H8.9V6A3.1,3.1 0 0,1 12,2.9A3.1,3.1 0 0,1 15.1,6V8Z'); } } }); }
+  function openWithdrawModal() { if(userBalance < MIN_WITHDRAW_AMOUNT) { alert(`You need at least ${MIN_WITHDRAW_AMOUNT} BDT to withdraw.`); return; } elements.withdrawModal.style.display = 'flex'; }
+  async function submitWithdrawal() { const number = elements.withdrawNumberInput.value.trim(); const gpRegex = /^(017|013)\d{8}$/; if (!gpRegex.test(number)) { alert('Please enter a valid Grameenphone number (e.g., 017... or 013...).'); return; } if (userBalance < MIN_WITHDRAW_AMOUNT) { alert('Insufficient balance.'); return; } this.disabled = true; try { const newBalance = userBalance - MIN_WITHDRAW_AMOUNT; await rdb.ref('users/' + profile.uid + '/balance').set(newBalance); await rdb.ref('withdrawal_requests').push({ uid: profile.uid, name: profile.name, number: number, amount: MIN_WITHDRAW_AMOUNT, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP }); await firestore.collection('chats').add({ type: 'withdrawal_notification', name: profile.name, amount: MIN_WITHDRAW_AMOUNT, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert('Withdrawal request submitted successfully!'); elements.withdrawModal.style.display = 'none'; elements.withdrawNumberInput.value = ''; } catch (error) { alert('An error occurred.'); console.error('Withdrawal Error:', error); } finally { this.disabled = false; } }
+  async function updateUserPoints(uid, pointsToAdd) { if (!uid) return; const userRef = rdb.ref('users/' + uid); const snapshot = await userRef.get(); if (snapshot.exists()) { const currentPoints = snapshot.val().points || 0; userRef.child('points').set(currentPoints + pointsToAdd); } }
+  function initTiBot() { setInterval(async () => { try { const presenceSnap = await rdb.ref('presence').get(); const onlineUsers = presenceSnap.val() || {}; if (!onlineUsers) return; const userUIDs = Object.values(onlineUsers).filter(u => u.uid && u.uid.startsWith('u_')).map(u => u.uid); if (userUIDs.length === 0) return; const usersSnap = await rdb.ref('users').get(); const usersData = usersSnap.val() || {}; const activeUsers = userUIDs.map(uid => { const userData = usersData[uid]; return { uid, points: userData?.points || 0, balance: userData?.balance || 0, name: onlineUsers[Object.keys(onlineUsers).find(key => onlineUsers[key].uid === uid)]?.name || 'A User' }; }).filter(u => u.points > 0); if (activeUsers.length > 0) { const highestUser = activeUsers.reduce((max, user) => user.points > max.points ? user : max); const giftAmount = 1; await rdb.ref('users/' + highestUser.uid).update({ balance: highestUser.balance + giftAmount, points: 0 }); await firestore.collection('chats').add({ type: 'gift', botName: 'Ti Bot', recipientName: highestUser.name, amount: giftAmount, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); } if (Math.random() < 0.3 && userUIDs.length > 0) { const randomUserUid = userUIDs[Math.floor(Math.random() * userUIDs.length)]; const randomUserData = usersData[randomUserUid] || { balance: 0 }; const randomUserName = onlineUsers[Object.keys(onlineUsers).find(key => onlineUsers[key].uid === randomUserUid)]?.name || 'A User'; const giftAmount = 1; await rdb.ref('users/' + randomUserUid).update({ balance: randomUserData.balance + giftAmount }); await firestore.collection('chats').add({ type: 'gift', botName: 'Ti Bot', recipientName: randomUserName, amount: giftAmount, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); } } catch (error) { console.error("Ti Bot Error:", error); } }, 120000); }
   async function uploadToImgbb(file) { const formData = new FormData(); formData.append('image', file); const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData }); const data = await res.json(); if (!data.success) throw new Error(data.error.message); return data.data.url; }
   function escapeHtml(str) { return str?.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]) || ''; }
   const debounce = (func, delay) => { let timeout; return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func(...args), delay); }; };
+  
+  // প্রোফাইল থাকলে ভয়েস চ্যাট শুরু করুন
+  if (profile) {
+      initVoiceChat();
+      listenForRtcSignals();
+  }
+
 </script>
 </body>
 </html>
