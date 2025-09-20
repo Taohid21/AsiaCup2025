@@ -187,7 +187,7 @@
   <div class="modal-overlay" id="profileModal"><div class="modal-content"><img id="avatarPreview" src="#" alt="Avatar Preview"/><h2>Join the Chat</h2><p>Create a profile to chat and talk.</p><input id="nameInput" type="text" placeholder="Your Name" /><label for="avatarFile" class="avatar-upload-label">Upload a Photo</label><input id="avatarFile" type="file" accept="image/*" style="display:none"/><button id="createProfileBtn">Create Profile</button><div id="uploading" style="display:none;color:var(--text-muted);font-size:12px;margin-top:8px;">Uploading...</div></div></div>
   <div class="modal-overlay" id="gifModal"><div class="modal-content"><input type="text" id="gifSearchInput" placeholder="Search for GIFs..."><div id="gifResults"></div></div></div>
   <div class="modal-overlay" id="lightbox"><div class="modal-content"><img id="lightboxImage" src=""><button id="lightboxClose">&times;</button></div></div>
-  <div class="modal-overlay" id="withdrawModal"><div class="modal-content"><h2>Withdraw Balance</h2><p>আপনি ৬০৳ বিকাশ অথবা রিচার্জ নিতে পারবেন! আপনার নাম্বারটি লিখুন</p><input id="withdrawNumberInput" type="tel" placeholder="e.g., 017.." /><button id="submitWithdrawBtn">Submit Request (60 BDT)</button></div></div>
+  <div class="modal-overlay" id="withdrawModal"><div class="modal-content"><h2>Withdraw Balance</h2><p>আপনার বিকাশ নম্বর লিখুন</p><input id="withdrawNumberInput" type="tel" placeholder="Your Account Number" /><button id="submitWithdrawBtn">Submit Request (20৳)</netton></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
@@ -201,7 +201,7 @@
   const GIPHY_API_KEY = "xPWo2aNJSvVnu8RFJZdMi1QycA6FL4lW";
   const YOUTUBE_API_KEY = "AIzaSyCFrCuHFk0LNylLnilq5zl-arWoSdil7OE";
   const PROFILE_KEY = 'livechat_profile_v10';
-  const MIN_WITHDRAW_AMOUNT = 60;
+  const MIN_WITHDRAW_AMOUNT = 20;
   const RTC_CONFIGURATION = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
   
   firebase.initializeApp(firebaseConfig);
